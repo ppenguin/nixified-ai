@@ -6,7 +6,9 @@ let
 in
 
 {
-  perSystem = { config, pkgs, ... }: let
+  perSystem = { config, pkgs, ... }:
+  let
+    ## FIXME: this is mindlessly copy-pasted from the invokeai counterpart; look it over
     commonOverlays = [
       overlays.python-fixPackages
       (l.overlays.callManyPackages [
