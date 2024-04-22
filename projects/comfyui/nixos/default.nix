@@ -27,8 +27,6 @@ in
         description = "path to the folders which stores models, custom nodes, input and output files";
       };
 
-      # TODO: This should probably use the global system cudaSupport by default
-      # and then allow overrides as necessary.
       cudaSupport = mkOption {
         type = types.bool;
         default = config.cudaSupport;
