@@ -33,7 +33,7 @@ in
         type = types.bool;
         default = config.cudaSupport;
         description = "Whether or not to enable CUDA for NVidia GPU acceleration.";
-        defaultText = literalExpression "config.services.cudaSupport";
+        defaultText = literalExpression "config.cudaSupport";
         example = literalExpression "true";
       };
 
@@ -41,7 +41,7 @@ in
         type = types.bool;
         default = config.rocmSupport;
         description = "Whether or not to enable ROCM for ATi GPU acceleration.";
-        defaultText = literalExpression "config.services.rocmSupport";
+        defaultText = literalExpression "config.rocmSupport";
         example = literalExpression "true";
       };
 
@@ -52,9 +52,9 @@ in
           then pkgs.comfyui-cuda
           else if config.rocmSupport
           then pkgs.comfyui-rocm
-          else pkgs.comfyui
+          else builtins.throw "can not choose a default package because neither config.cudaSupport nor config.rocmSupport are enabled"
         );
-        defaultText = literalExpression "pkgs.comfyui";
+        defaultText = "Either comfyui-cuda or comfyui-rocm depending on whether cudaSupport or rocmSupport is enabled";
         example = literalExpression "pkgs.comfyui-rocm";
         description = "ComfyUI base package to use";
       };
