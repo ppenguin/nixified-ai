@@ -51,6 +51,7 @@
         hercules-ci-effects.flakeModule
 #        ./modules/nixpkgs-config
         ./overlays
+        ./projects/comfyui
         ./projects/invokeai
         ./projects/textgen
         ./website
