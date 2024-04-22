@@ -1,5 +1,5 @@
 { lib
-, python311
+, python3
 , linkFarm
 , writers
 , writeTextFile
@@ -7,13 +7,6 @@
 , stdenv
 , symlinkJoin
 , config
-, gpuBackend ? (
-  if config.cudaSupport
-  then "cuda"
-  else if config.rocmSupport
-  then "rocm"
-  else "none"
-)
 , modelsPath ? "/var/lib/comfyui/models"
 , inputPath ? "/var/lib/comfyui/input"
 , outputPath ? "/var/lib/comfyui/output"
@@ -56,22 +49,14 @@ let
     text = (lib.generators.toYAML {} config-data);
   };
 
-  pythonEnv = (python311.withPackages (ps: with ps; [
-    pytorch-bin
-    # (
-    #   if gpuBackend == "cuda"
-    #   then torchWithCuda
-    #   else if gpuBackend == "rocm"
-    #   then torchWithRocm
-    #   else torch
-    # )
+  pythonEnv = (python3.withPackages (ps: with ps; [
+    torch
     # torchsde
-    torchvision-bin
+    torchvision
     # torchaudio
-    (transformers.override { torch = pytorch-bin; })
-    (safetensors.override { torch = pytorch-bin; })
-    (accelerate.override { torch = pytorch-bin; })
-    # accelerate
+    transformers
+    safetensors
+    accelerate
     torchsde
     aiohttp
     einops
