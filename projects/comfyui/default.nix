@@ -31,7 +31,12 @@ in
         python3 = python3Variants.amd.python;
       };
       comfyui-nvidia = mkComfyUIVariant {
-        python3 = python3Variants.nvidia.python;
+        python3 = pkgs.python3Packages.python.override {
+          packageOverrides = final: prev: {
+            torch = prev.torch-bin;
+            torchvision = prev.torchvision-bin;
+          };
+        };
       };
     };
   };
