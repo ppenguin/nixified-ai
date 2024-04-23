@@ -45,6 +45,14 @@ lib: {
     opencv-python = final.opencv4;
   };
 
+  pythonFinal = final: prev: {
+    python = prev.python.override {
+      packageOverrides = _: _: {
+        torch = final.torch;
+      };
+    };
+  };
+
   torchRocm = final: prev: {
     torch = prev.torch.override {
       magma = prev.pkgs.magma-hip;
