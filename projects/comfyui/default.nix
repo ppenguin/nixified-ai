@@ -31,6 +31,8 @@ in
         python3 = python3Variants.amd.python;
       };
       comfyui-nvidia = mkComfyUIVariant {
+        # use this if you want to spend a day compiling. (please cache the result)
+        # python3 = python3Variants.nvidia.python;
         python3 = pkgs.python3Packages.python.override {
           packageOverrides = final: prev: {
             torch = prev.torch-bin;
