@@ -9,9 +9,11 @@ in
   perSystem = { config, pkgs, ... }:
   let
     commonOverlays = [
+      # TODO: identify what we actually need
       (l.overlays.callManyPackages [
         ../../packages/mediapipe
       ])
+      # what gives us a python with the cuda/rocm torch package override
       overlays.python-pythonFinal
     ];
 
@@ -19,9 +21,10 @@ in
       amd = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
         overlays.python-torchRocm
       ]);
-      nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
-        overlays.python-torchCuda
-      ]);
+      # temp; see below
+      # nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
+      #   overlays.python-torchCuda
+      # ]);
     };
 
     mkComfyUIVariant = pkgs.callPackage ./package.nix;
@@ -31,14 +34,15 @@ in
         python3 = python3Variants.amd.python;
       };
       comfyui-nvidia = mkComfyUIVariant {
-        # use this if you want to spend a day compiling. (please cache the result)
-        # python3 = python3Variants.nvidia.python;
+        # FIXME: temporary standin for practical purposes.
         python3 = pkgs.python3Packages.python.override {
           packageOverrides = final: prev: {
             torch = prev.torch-bin;
             torchvision = prev.torchvision-bin;
           };
         };
+        # use this instead if you want to spend a day compiling. (please cachix the result)
+        # python3 = python3Variants.nvidia.python;
       };
     };
   };
