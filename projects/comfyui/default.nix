@@ -1,4 +1,4 @@
-{ config, inputs, lib, withSystem, ... }:
+{ config, lib, withSystem, ... }:
 
 let
   l = lib // config.flake.lib;
@@ -6,7 +6,7 @@ let
 in
 
 {
-  perSystem = { config, pkgs, ... }:
+  perSystem = { config, pkgs, comfyuiCfg, ... }:
   let
     commonOverlays = [
       # TODO: identify what we actually need
@@ -27,7 +27,17 @@ in
       # ]);
     };
 
-    mkComfyUIVariant = pkgs.callPackage ./package.nix;
+    mkComfyUIVariant = args:
+      pkgs.callPackage ./package.nix ({
+        inherit (comfyuiCfg)
+          models
+          customNodes
+          modelsPath
+          inputPath
+          outputPath
+          tempPath
+          userPath;
+      } // args);
   in {
     packages = {
       comfyui-amd = mkComfyUIVariant {
@@ -44,6 +54,9 @@ in
         # use this instead if you want to spend a day compiling. (please cachix the result)
         # python3 = python3Variants.nvidia.python;
       };
+
+      # comfyui-krita-amd = _;
+      # comfyui-krita-nvidia = _;
     };
   };
 

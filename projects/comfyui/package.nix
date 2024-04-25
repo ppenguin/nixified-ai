@@ -20,7 +20,7 @@
     configs = {};
     controlnet = {};
     embeddings = {};
-    upscale_modules = {};
+    upscale_models = {};
     vae = {};
     vae_approx = {};
   }

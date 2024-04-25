@@ -10,6 +10,10 @@
     nixpkgs = {
       url = "github:NixOS/nixpkgs/2fd19c8be2551a61c1ddc3d9f86d748f4db94f00";
     };
+    nixified-cfg = {
+      url = "github:lboklin/nixified-cfg";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     invokeai-src = {
       url = "github:invoke-ai/InvokeAI/v3.3.0post3";
       flake = false;
@@ -27,12 +31,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
+  outputs = { flake-parts, invokeai-src, hercules-ci-effects, nixified-cfg, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       perSystem = { system, ... }: {
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
+        _module.args = {
+          comfyuiModels = nixified-cfg.lib.comfyui.availableModels;
+          comfyuiCfg = nixified-cfg.cfg.comfyui;
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
         };
         legacyPackages = {
           koboldai = builtins.throw ''
@@ -51,6 +59,7 @@
       ];
       debug = true;
       imports = [
+        ./checks
         hercules-ci-effects.flakeModule
 #        ./modules/nixpkgs-config
         ./overlays
