@@ -107,11 +107,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1714065345,
-        "narHash": "sha256-SUUvu3pyth8kTTQmsyEuzkIZUI1gDDwBC5mTbVIjiuE=",
+        "lastModified": 1714127860,
+        "narHash": "sha256-zUoQBD8hgxMWPTA/IcZHQalDbr72XcyNYy9JGsOedFs=",
         "owner": "lboklin",
         "repo": "nixified-cfg",
-        "rev": "2d4daf6904ec3fe531db5a62c2c94e522d4ae545",
+        "rev": "1120b9f3ffef786c3100ac4ed779920d620bce85",
         "type": "github"
       },
       "original": {

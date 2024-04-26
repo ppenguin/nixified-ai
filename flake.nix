@@ -35,7 +35,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       perSystem = { system, ... }: {
         _module.args = {
-          comfyuiModels = nixified-cfg.lib.comfyui.availableModels;
+          comfyuiModels = nixified-cfg.lib.comfyui.models;
           comfyuiCfg = nixified-cfg.cfg.comfyui;
           pkgs = import inputs.nixpkgs {
             inherit system;
