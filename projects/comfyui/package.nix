@@ -7,23 +7,13 @@
 , stdenv
 , symlinkJoin
 , config
-, modelsPath ? "/var/lib/comfyui/models"
-, inputPath ? "/var/lib/comfyui/input"
-, outputPath ? "/var/lib/comfyui/output"
-, tempPath ? "/var/lib/comfyui/temp"
-, userPath ? "/var/lib/comfyui/user"
-, customNodes ? []
-, models ? {
-    checkpoints = {};
-    clip = {};
-    clip_vision = {};
-    configs = {};
-    controlnet = {};
-    embeddings = {};
-    upscale_models = {};
-    vae = {};
-    vae_approx = {};
-  }
+, modelsPath
+, inputPath
+, outputPath
+, tempPath
+, userPath
+, customNodes
+, models
 }:
 
 let

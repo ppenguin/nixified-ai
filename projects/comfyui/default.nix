@@ -35,16 +35,7 @@ in
     };
 
     mkComfyUIVariant = args:
-      pkgs.callPackage ./package.nix ({
-        inherit (comfyuiCfg)
-          models
-          customNodes
-          modelsPath
-          inputPath
-          outputPath
-          tempPath
-          userPath;
-      } // args);
+      pkgs.callPackage ./package.nix (comfyuiCfg // args);
   in {
     packages = {
       comfyui-amd = mkComfyUIVariant {
