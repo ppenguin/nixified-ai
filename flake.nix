@@ -41,8 +41,7 @@
           };
         in {
           inherit pkgs;
-          comfyuiModels = nixified-cfg.lib.comfyui.models pkgs;
-          comfyuiCfg = nixified-cfg.cfg.comfyui pkgs;
+          comfyuiCfg = nixified-cfg.cfg.comfyui system;
         };
         legacyPackages = {
           koboldai = builtins.throw ''
