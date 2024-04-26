@@ -34,13 +34,15 @@
   outputs = { flake-parts, invokeai-src, hercules-ci-effects, nixified-cfg, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       perSystem = { system, ... }: {
-        _module.args = {
-          comfyuiModels = nixified-cfg.lib.comfyui.models;
-          comfyuiCfg = nixified-cfg.cfg.comfyui;
+        _module.args = let
           pkgs = import inputs.nixpkgs {
             inherit system;
             config.allowUnfree = true;
           };
+        in {
+          inherit pkgs;
+          comfyuiModels = nixified-cfg.lib.comfyui.models pkgs;
+          comfyuiCfg = nixified-cfg.cfg.comfyui pkgs;
         };
         legacyPackages = {
           koboldai = builtins.throw ''
