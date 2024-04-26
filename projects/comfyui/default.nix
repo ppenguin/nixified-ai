@@ -12,8 +12,9 @@ in
       # TODO: identify what we actually need
       (l.overlays.callManyPackages [
         ../../packages/mediapipe
+        ../../packages/accelerate
       ])
-      # what gives us a python with the cuda/rocm torch package override
+      # what gives us a python with the overlays actually applied
       overlays.python-pythonFinal
     ];
 
@@ -21,10 +22,16 @@ in
       amd = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
         overlays.python-torchRocm
       ]);
-      # temp; see below
-      # nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
-      #   overlays.python-torchCuda
-      # ]);
+      nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
+        # FIXME: temporary standin for practical purposes.
+        # They're prebuilt and come with cuda support.
+        (final: prev: {
+          torch = prev.torch-bin;
+          torchvision = prev.torchvision-bin;
+        })
+        # use this when things stabilise and we feel ready to build the whole thing
+        # overlays.python-torchCuda
+      ]);
     };
 
     mkComfyUIVariant = args:
@@ -44,19 +51,8 @@ in
         python3 = python3Variants.amd.python;
       };
       comfyui-nvidia = mkComfyUIVariant {
-        # FIXME: temporary standin for practical purposes.
-        python3 = pkgs.python3Packages.python.override {
-          packageOverrides = final: prev: {
-            torch = prev.torch-bin;
-            torchvision = prev.torchvision-bin;
-          };
-        };
-        # use this instead if you want to spend a day compiling. (please cachix the result)
-        # python3 = python3Variants.nvidia.python;
+        python3 = python3Variants.nvidia.python;
       };
-
-      # comfyui-krita-amd = _;
-      # comfyui-krita-nvidia = _;
     };
   };
 

@@ -47,9 +47,9 @@ lib: {
 
   pythonFinal = final: prev: {
     python = prev.python.override {
-      packageOverrides = _: _: {
-        torch = final.torch;
-      };
+      # gives us a `python` where `python3Packages.python.pkgs` is the same package set as our `python3Packages`
+      # with overrides applied
+      packageOverrides = _: _: final;
     };
   };
 
@@ -59,9 +59,6 @@ lib: {
       cudaSupport = false;
       rocmSupport = true;
     };
-    torchvision = prev.torchvision.overridePythonAttrs (old: {
-      patches = (old.patches or []) ++ [ ./torchvision/fix-rocm-build.patch ];
-    });
   };
 
   torchCuda = final: prev: {
