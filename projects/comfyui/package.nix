@@ -27,6 +27,8 @@ let
       configs = "${modelsPath}/configs";
       controlnet = "${modelsPath}/controlnet";
       embeddings = "${modelsPath}/embeddings";
+      inpaint = "${modelsPath}/inpaint";
+      ipadapters = "${modelsPath}/ipadapters";
       loras = "${modelsPath}/loras";
       upscale_models= "${modelsPath}/upscale_models";
       vae = "${modelsPath}/vae";
