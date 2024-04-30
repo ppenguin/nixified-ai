@@ -57,9 +57,7 @@ let
     scipy
     psutil
     tqdm
-  ]);
-  # FIXME: this doesn't work
-  # ] ++ (builtins.concatMap (node: node.dependencies) customNodes));
+  ] ++ customNodes.dependencies);
 
   executable = writers.writeDashBin "comfyui" ''
     cd $out && \
