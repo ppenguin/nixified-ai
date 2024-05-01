@@ -27,7 +27,7 @@ let
       controlnet = "${models}/controlnet";
       embeddings = "${models}/embeddings";
       inpaint = "${models}/inpaint";
-      ipadapters = "${models}/ipadapters";
+      ipadapter = "${models}/ipadapter";
       loras = "${models}/loras";
       upscale_models= "${models}/upscale_models";
       vae = "${models}/vae";
