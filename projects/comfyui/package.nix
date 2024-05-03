@@ -1,3 +1,4 @@
+## TODO: what if no customNodes?
 { lib
 , python3
 , linkFarm
@@ -6,7 +7,6 @@
 , fetchFromGitHub
 , stdenv
 , symlinkJoin
-, config
 , models
 , customNodes
 , inputPath
