@@ -34,19 +34,25 @@ in
       ]);
     };
 
+    customNodes = import ./custom-nodes { inherit lib pkgs; };
+    models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
+
     # we require a python3 with an appropriately overriden package set depending on GPU
     mkComfyUIVariant = python3: args:
       pkgs.callPackage ./package.nix ({ inherit python3; } // args);
 
-    perGPUVendor = f: lib.attrsets.mergeAttrsList (builtins.map f ["amd" "nvidia"]);
-
-    customNodes = import ./custom-nodes { inherit lib pkgs; };
-    models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
-
-  in {
-    legacyPackages.comfyui = { inherit models customNodes; };
-  } // perGPUVendor (vendor: let
-      # withConfig :: { models :: attrsOf fetchedModels, customNodes :: attrsOf fetchedCustomNodes }
+    # everything here needs to be parametrised over gpu vendor
+    legacyPkgs = vendor: let
+      # withConfig ::
+      #   { models :: attrsOf fetchedModels
+      #   , customNodes :: attrsOf fetchedCustomNodes
+      #   , inputPath :: str
+      #   , outputPath :: str
+      #   , tempPath :: str
+      #   , userPath :: str
+      #   , ...
+      #   }
+      #   -> drv
       # where
       #   `attrsOf fetchedModels` here is the type of what is in ./models/default.nix, i.e
       #   a three levels deep attrset of the form
@@ -63,70 +69,28 @@ in
       };
       # we define this in terms of `withPlugins` to serve as an example of its usage
       krita-server = f: withPlugins
-        (models: f models // {
-          checkpoints = {
-            inherit (models.checkpoints)
-              DreamShaper_8_pruned
-              juggernautXL_version6Rundiffusion
-              realisticVisionV51_v51VAE;
-          };
-          inpaint = {
-            inherit (models.inpaint)
-              fooocus_inpaint_head
-              "inpaint_v26.fooocus"
-              MAT_Places512_G_fp16;
-          };
-          "clip_vision/sd1.5" = {
-            inherit (models."clip_vision/sd1.5")
-              model;
-          };
-          controlnet = {
-            inherit (models.controlnet)
-              control_lora_rank128_v11f1e_sd15_tile_fp16
-              control_v11p_sd15_inpaint_fp16;
-          };
-          ipadapter = {
-            inherit (models.ipadapter)
-              ip-adapter_sd15
-              ip-adapter_sdxl_vit-h;
-          };
-          loras = {
-            inherit (models.loras)
-              lcm-lora-sdv1-5
-              lcm-lora-sdxl;
-          };
-          upscale_models = {
-            inherit (models.upscale_models)
-              OmniSR_X2_DIV2K
-              OmniSR_X3_DIV2K
-              OmniSR_X4_DIV2K;
-          };
-        })
-        (customNodes: {
-          inherit (customNodes)
-            controlnet-aux
-            inpaint-nodes
-            ipadapter-plus
-            tooling-nodes
-            ultimate-sd-upscale;
-        });
+        (models: f models // import ./models/krita-ai-plugin.nix models)
+        (import ./custom-nodes/krita-ai-plugin.nix);
     in {
-      legacyPackages.comfyui."${vendor}" = {
-        inherit
-          withConfig
-          withPlugins;
-        krita-server = krita-server (_: {}) // {
-          # is this a bad pattern?
-          withExtraModels = krita-server;
-        };
-        # is this better or worse?
-        # kritaServerWithExtraModels = krita-server;
+      inherit
+        customNodes
+        models
+        withConfig
+        withPlugins;
+      krita-server = krita-server (_: {}) // {
+        # is this a bad pattern?
+        withExtraModels = krita-server;
       };
+    };
+  in {
+    legacyPackages.comfyui.amd = legacyPkgs "amd";
+    legacyPackages.comfyui.nvidia = legacyPkgs "nvidia";
 
-      packages = {
-        "krita-comfyui-server-${vendor}" = krita-server (_: {});
-      };
-  });
+    packages = {
+      krita-comfyui-server-amd = (legacyPkgs "amd").krita-server;
+      krita-comfyui-server-nvidia = (legacyPkgs "nvidia").krita-server;
+    };
+  };
 
   flake.nixosModules = let
     packageModule = pkgAttrName: { pkgs, ... }: {
