@@ -1,4 +1,3 @@
-## TODO: what if no customNodes?
 { lib
 , python3
 , linkFarm
@@ -42,9 +41,7 @@ let
 
   pythonEnv = python3.withPackages (ps: with ps; [
     torch
-    # torchsde
     torchvision
-    # torchaudio
     transformers
     safetensors
     accelerate
@@ -114,13 +111,10 @@ in stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  # outputs = ["" "extra_model_paths.yaml" "inputs" "outputs"];
-
   meta = with lib; {
     homepage = "https://github.com/comfyanonymous/ComfyUI";
     description = "The most powerful and modular stable diffusion GUI with a graph/nodes interface.";
     license = licenses.gpl3;
     platforms = platforms.all;
-    maintainers = with maintainers; [ fazo96 ];
   };
 }

@@ -129,7 +129,7 @@ in
       customNodes = import ./custom-nodes { inherit lib pkgs; };
       models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
     in {
-      legacyPackages."${pkgs.system}".comfyui."${vendor}" = {
+      legacyPackages.comfyui."${vendor}" = {
         inherit
           withConfig
           withModels
