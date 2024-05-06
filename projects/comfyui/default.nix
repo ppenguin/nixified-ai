@@ -34,49 +34,34 @@ in
       ]);
     };
 
-    mkComfyUIVariant = let
-      defaultBasePath = "/var/lib/comfyui";
-    in
-      { models
-      , customNodes
-      , inputPath ? "${defaultBasePath}/input"
-      , outputPath ? "${defaultBasePath}/output"
-      , tempPath ? "${defaultBasePath}/temp"
-      , userPath ? "${defaultBasePath}/user"
-      , ...
-      }@args: let
-      plugins = {
-        customNodes = let
-          deps = nodes: with builtins; lib.pipe nodes [
-            attrValues
-            (map (v: v.dependencies))
-            concatLists
-          ];
-        in (pkgs.linkFarm "comfyui-custom-nodes" customNodes)
-          .overrideAttrs (old: old // { dependencies = deps customNodes; });
-
-        models = let
-          inherit (lib.attrsets) concatMapAttrs;
-          concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
-          toNamePath = concatMapModels (type: name: fetched: {
-            "${type}/${name}.${fetched.format}" = fetched.path;
-          });
-        in pkgs.linkFarm "comfyui-models" (toNamePath models);
-      };
-    in pkgs.callPackage ./package.nix ({
-      # must make these explicit or they'll simply not be passed in
-      inherit inputPath outputPath tempPath userPath;
-    } // args // plugins);
+    # we require a python3 with an appropriately overriden package set depending on GPU
+    mkComfyUIVariant = python3: args:
+      pkgs.callPackage ./package.nix ({ inherit python3; } // args);
 
     perGPUVendor = f: lib.attrsets.mergeAttrsList (builtins.map f ["amd" "nvidia"]);
 
-  in perGPUVendor (vendor: let
-      python3 = python3Variants."${vendor}".python;
-      withConfig = cfg: mkComfyUIVariant ({ inherit python3; } // cfg);
+    customNodes = import ./custom-nodes { inherit lib pkgs; };
+    models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
+
+  in {
+    legacyPackages.comfyui = { inherit models customNodes; };
+  } // perGPUVendor (vendor: let
+      # withConfig :: { models :: attrsOf fetchedModels, customNodes :: attrsOf fetchedCustomNodes }
+      # where
+      #   `attrsOf fetchedModels` here is the type of what is in ./models/default.nix, i.e
+      #   a three levels deep attrset of the form
+      #     `{ "${type}" = { "${pname-minus-ext}" = fetchModel model; ... }; ... }`
+      #     where
+      #       `model = { format = _; url = _; sha256 = _; }`
+      #       `fetchModel model :: { name :: str, format :: str, path :: str }`
+      #       `fetchModel` comes from `./models/fetch-model.nix`
+      #   `fetchedCustomNodes :: attrsOf drv` (see ./custom-nodes/default.nix):
+      withConfig = mkComfyUIVariant python3Variants."${vendor}".python;
       withPlugins = f: g: withConfig {
         models = f models;
         customNodes = g customNodes;
       };
+      # we define this in terms of `withPlugins` to serve as an example of its usage
       krita-server = f: withPlugins
         (models: f models // {
           checkpoints = {
@@ -125,8 +110,6 @@ in
             tooling-nodes
             ultimate-sd-upscale;
         });
-      customNodes = import ./custom-nodes { inherit lib pkgs; };
-      models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
     in {
       legacyPackages.comfyui."${vendor}" = {
         inherit

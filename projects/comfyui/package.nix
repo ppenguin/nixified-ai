@@ -1,3 +1,6 @@
+let
+  defaultBasePath = "/var/lib/comfyui";
+in
 { lib
 , python3
 , linkFarm
@@ -8,29 +11,46 @@
 , symlinkJoin
 , models
 , customNodes
-, inputPath
-, outputPath
-, tempPath
-, userPath
+, inputPath ? "${defaultBasePath}/input"
+, outputPath ? "${defaultBasePath}/output"
+, tempPath ? "${defaultBasePath}/temp"
+, userPath ? "${defaultBasePath}/user"
 }:
 
 let
+  # turn fetched custom nodes and models into derivations
+  customNodesDrv = let
+    deps = nodes: with builtins; lib.pipe nodes [
+      attrValues
+      (map (v: v.dependencies))
+      concatLists
+    ];
+  in (linkFarm "comfyui-custom-nodes" customNodes)
+    .overrideAttrs (old: old // { dependencies = deps customNodes; });
+
+  modelsDrv = let
+    inherit (lib.attrsets) concatMapAttrs;
+    concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
+    toNamePath = concatMapModels (type: name: fetched: {
+      "${type}/${name}.${fetched.format}" = fetched.path;
+    });
+  in linkFarm "comfyui-models" (toNamePath models);
 
   config-data = {
     comfyui = {
-      base_path = "${models}";
-      checkpoints = "${models}/checkpoints";
-      clip = "${models}/clip";
-      clip_vision = "${models}/clip_vision";
-      configs = "${models}/configs";
-      controlnet = "${models}/controlnet";
-      embeddings = "${models}/embeddings";
-      inpaint = "${models}/inpaint";
-      ipadapter = "${models}/ipadapter";
-      loras = "${models}/loras";
-      upscale_models= "${models}/upscale_models";
-      vae = "${models}/vae";
-      vae_approx = "${models}/vae_approx";
+      base_path = "${modelsDrv}";
+      checkpoints = "${modelsDrv}/checkpoints";
+      clip = "${modelsDrv}/clip";
+      clip_vision = "${modelsDrv}/clip_vision";
+      configs = "${modelsDrv}/configs";
+      controlnet = "${modelsDrv}/controlnet";
+      embeddings = "${modelsDrv}/embeddings";
+      inpaint = "${modelsDrv}/inpaint";
+      ipadapter = "${modelsDrv}/ipadapter";
+      loras = "${modelsDrv}/loras";
+      upscale_models= "${modelsDrv}/upscale_models";
+      vae = "${modelsDrv}/vae";
+      vae_approx = "${modelsDrv}/vae_approx";
     };
   };
 
