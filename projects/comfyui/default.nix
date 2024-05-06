@@ -77,7 +77,6 @@ in
         models = f models;
         customNodes = g customNodes;
       };
-      withModels = f: withPlugins f (_: {});
       krita-server = f: withPlugins
         (models: f models // {
           checkpoints = {
@@ -132,7 +131,6 @@ in
       legacyPackages.comfyui."${vendor}" = {
         inherit
           withConfig
-          withModels
           withPlugins;
         krita-server = krita-server (_: {}) // {
           # is this a bad pattern?
