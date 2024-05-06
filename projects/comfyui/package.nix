@@ -74,7 +74,7 @@ let
     scipy
     psutil
     tqdm
-  ] ++ customNodes.dependencies);
+  ] ++ customNodesDrv.dependencies);
 
   executable = writers.writeDashBin "comfyui" ''
     cd $out && \
@@ -118,7 +118,7 @@ in stdenv.mkDerivation rec {
     ln -s ${outputPath} $out/output
     mkdir -p $out/${tempPath}
     echo "Setting up custom nodes"
-    ln -snf ${customNodes} $out/custom_nodes
+    ln -snf ${customNodesDrv} $out/custom_nodes
     echo "Copying executable script"
     cp ${executable}/bin/comfyui $out/bin/comfyui
     substituteInPlace $out/bin/comfyui --replace "\$out" "$out"
