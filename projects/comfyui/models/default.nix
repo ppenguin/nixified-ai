@@ -76,12 +76,13 @@ in {
     # https://comfyanonymous.github.io/ComfyUI_examples/video/ for the
     # official ComfyUI documentation.
     stable-video-diffusion-img2vid-xt = (fetchModel {
-      url = "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/main/svd_xt.safetensors?download=true";
       format = "safetensors";
+      url = "https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/resolve/main/svd_xt.safetensors?download=true";
       sha256 = "b2652c23d64a1da5f14d55011b9b6dce55f2e72e395719f1cd1f8a079b00a451";
     });
 
   };
+
   inpaint = {
     MAT_Places512_G_fp16 = (fetchModel {
       format = "safetensors";
@@ -102,7 +103,24 @@ in {
     });
 
   };
+
   clip = {};
+
+  clip_vision = {
+    CLIP-ViT-H-14-laion2B-s32B-b79K = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors";
+      sha256 = "sha256-bKlmfaHKngsPdeRrsDD34BH0T4bL+41aNlkPzXUHsDA=";
+    });
+
+    CLIP-ViT-bigG-14-laion2B-39B-b160k = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/model.safetensors";
+      sha256 = "sha256-ZXcj4J9Gp8OVffZRYBAp9msXSK+xK0GYFjMPFu1F1k0=";
+    });
+
+  };
+
   # this is a bit ugly, but it works when you need to put something in a subdirectory
   "clip_vision/sd1.5" = {
     model = (fetchModel {
@@ -112,17 +130,30 @@ in {
     });
 
   };
+
   configs = {
     # https://huggingface.co/lllyasviel/ControlNet-v1-1
     # https://github.com/lllyasviel/ControlNet-v1-1-nightly
     # See also the accompanying file in `controlnet`.
     controlnet-v1_1_fe-sd15-tile = (fetchModel {
       format = "yaml";
-      url = "https://huggingface.co/lllyasviel/ControlNet-v1-1/raw/main/control_v11f1e_sd15_tile.yaml";
+      url = "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.yaml";
       sha256 = "sha256-OeEzjEFDYYrbF2BPlsOj90DBq10VV9cbBE8DB6CmrbQ=";
     });
+
   };
+
   controlnet = {
+    ## SD 1.5
+
+    # https://huggingface.co/lllyasviel/ControlNet-v1-1
+    # See also the accompanying file in `configs`.
+    controlnet-v1_1_f1e-sd15-tile = (fetchModel {
+      format = "pth";
+      url = "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1e_sd15_tile.pth";
+      sha256 = "sha256-iqabjTkecsL87WplAmgTfcDtWUyv6KLA+LmUeZohl5s=";
+    });
+
     control_v11p_sd15_inpaint_fp16 = (fetchModel {
       format = "safetensors";
       url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11p_sd15_inpaint_fp16.safetensors";
@@ -135,39 +166,228 @@ in {
       sha256 = "sha256-zsADaemc/tHOyX4RJM8yIN96meRTVOqh4zUMSF5lFU8=";
     });
 
-    # https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic_V1
-    ttplanet-sdxl-controlnet-tile-realistic-32-v1 = (fetchModel {
+    control_lora_rank128_v11p_sd15_scribble = (fetchModel {
       format = "safetensors";
-      url = "https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic_V1/resolve/main/TTPLANET_Controlnet_Tile_realistic_v1_fp32.safetensors?download=true";
-      sha256 = "sha256-8zASy6xYOYhfFDqirMsuQDQUx9rRGTZLvhjeN+SmX2c=";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_scribble_fp16.safetensors";
+      sha256 = "sha256-8fAojNbUkNmXap9MNigvPUfLjgLcaAWqRLONRAT+AIo=";
     });
 
-    ttplanet-sdxl-controlnet-tile-realistic-16-v1 = (fetchModel {
+    control_lora_rank128_v11p_sd15_lineart = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_lineart_fp16.safetensors";
+      sha256 = "sha256-nTqRttVaMSNIPesJ9xzFWKC9VOXsQUL1GHmE29LgmdE=";
+    });
+
+    control_lora_rank128_v11p_sd15_softedge = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_softedge_fp16.safetensors";
+      sha256 = "sha256-AQiSrKkewwKOtms0troweabbVNqF7UsI8XLg0Gr5sX0=";
+    });
+
+    control_lora_rank128_v11p_sd15_canny = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_canny_fp16.safetensors";
+      sha256 = "sha256-RQU9NBrDbYVZrTAUOPwIsyBCHngqXsiIirivFrd2PGs=";
+    });
+
+    control_lora_rank128_v11f1p_sd15_depth = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11f1p_sd15_depth_fp16.safetensors";
+      sha256 = "sha256-egSAgFlH83eYWowmhLjlLN0mX8sltmBOqUCazgjbPTQ=";
+    });
+
+    control_lora_rank128_v11p_sd15_normalbae = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_normalbae_fp16.safetensors";
+      sha256 = "sha256-yoQBCo6DLT0uZxx2ZP80X2RfPvfoNZy8o+KzbYa8/zA=";
+    });
+
+    control-lora-openposexl2-rank = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/thibaud/controlnet-openpose-sdxl-1.0/resolve/main/control-lora-openposeXL2-rank256.safetensors";
+      sha256 = "sha256-ivoHkoW/k4Tq+PYyKITLTyS75AXaSQ+R9VQNO/9YXnU=";
+    });
+
+    control_lora_rank128_v11p_sd15_openpose = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_openpose_fp16.safetensors";
+      sha256 = "sha256-bI7d4knmuW9smwUWokPXXritw4Yk7+FxqcirX7Gmlgg=";
+    });
+
+    control_lora_rank128_v11p_sd15_seg = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_lora_rank128_v11p_sd15_seg_fp16.safetensors";
+      sha256 = "sha256-EZN5QVl6ZxUO8PdKow8IKxY0QxCA3uYJ0CMamlm3+k8=";
+    });
+
+    control_v1p_sd15_qrcode_monster = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/monster-labs/control_v1p_sd15_qrcode_monster/resolve/main/control_v1p_sd15_qrcode_monster.safetensors";
+      sha256 = "sha256-x/Q/cOJmFT0S9eG7HJ574/RRPPDu8EMmYbEzG/4Ryt8=";
+    });
+
+    control_sd15_inpaint_depth_hand = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/resolve/main/control_sd15_inpaint_depth_hand_fp16.safetensors";
+      sha256 = "sha256-lEt0uO03ARF//lVQAmu/8shhbxySsbsv7gDlNJ/0YlY=";
+    });
+
+    ## SD XL
+
+    control-lora-sketch-rank = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/stabilityai/control-lora/resolve/main/control-LoRAs-rank128/control-lora-sketch-rank128-metadata.safetensors";
+      sha256 = "sha256-Z5xhaAeuxzxHu3KBokp23f5S+ltdaFMvVCq4EzR7Lq4=";
+    });
+
+    control-lora-recolor-rank = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/stabilityai/control-lora/resolve/main/control-LoRAs-rank128/control-lora-recolor-rank128.safetensors";
+      sha256 = "sha256-1sAdWIVQ1Bq0f/JTSuE1RB7Y5hS3KzFnh+i3kWzgjmE=";
+    });
+
+    control-lora-canny-rank = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/stabilityai/control-lora/resolve/main/control-LoRAs-rank128/control-lora-canny-rank128.safetensors";
+      sha256 = "sha256-VjiduyRcpE3pHWYlKb1CmKvFXOIxj2C8GUVPty/2gkc=";
+    });
+
+    control-lora-depth-rank = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/stabilityai/control-lora/resolve/main/control-LoRAs-rank128/control-lora-depth-rank128.safetensors";
+      sha256 = "sha256-N+ORdX5sAEL6o3lRdKy+EaMZkiUgWM+4u6zPEQc1Z7Q=";
+    });
+
+    # https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic_V1
+    ttplanet_sdxl_controlnet_tile_realistic = (fetchModel {
       format = "safetensors";
       url = "https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic_V1/resolve/main/TTPLANET_Controlnet_Tile_realistic_v1_fp16.safetensors?download=true";
       sha256 = "sha256-+ipfL+yBSBnINUA8d4viwkN9FHkxkhMEVp/M7CtFFzw=";
     });
 
-    # https://huggingface.co/lllyasviel/ControlNet-v1-1
-    # See also the accompanying file in `configs`.
-    controlnet-v1_1_f1e-sd15-tile = (fetchModel {
-      format = "pth";
-      url = "https://huggingface.co/lllyasviel/ControlNet-v1-1/blob/main/control_v11f1e_sd15_tile.pth";
-      sha256 = "sha256-GGzAgoSZv+llnOU13H+Zpk7nr1KbTfGbVbJ0u0F2Oho=";
-    });
-
   };
   ipadapter = {
+    # Basic model, average strength
     ip-adapter_sd15 = (fetchModel {
       format = "safetensors";
       url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15.safetensors";
       sha256 = "sha256-KJtF8W0EPQv1QuRYMflx3Nqr4YtlbxHobZ37p+nuM2k=";
     });
+
+    # SDXL model
     ip-adapter_sdxl_vit-h = (fetchModel {
       format = "safetensors";
       url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_sdxl_vit-h.safetensors";
       sha256 = "sha256-6/BdkYNIrsersCpens73fgquppFKXE6hP1DUXrFoGDE=";
     });
+
+    # Light impact model
+    ip-adapter_sd15_light_v11 = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_light_v11.bin";
+      sha256 = "sha256-NQtjpXhHwWPi6YSwEJD4X/5g6q4g8ysrLJ4czH3dlys=";
+    });
+
+    # Plus model, very strong
+    ip-adapter-plus_sd15 = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus_sd15.safetensors";
+      sha256 = "sha256-ocJQvkBFXMYaQ9oSAew/HtrqcSFIZftH9Xkn4Gy+SZY=";
+    });
+
+    # Face model, portraits
+    ip-adapter-plus-face_sd15 = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus-face_sd15.safetensors";
+      sha256 = "sha256-HJ7cIa9vc33B1uDnNBkOl2z6z4AtawJLd6o76SL3Vps=";
+    });
+
+    # Stronger face model, not necessarily better
+    ip-adapter-full-face_sd15 = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-full-face_sd15.safetensors";
+      sha256 = "sha256-9KF/tkO/h2I1pFoOh6SdooVb5lhLKMoExiqXq1/xxvM=";
+    });
+
+    # Base model, requires bigG clip vision encoder
+    ip-adapter_sd15_vit-G = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_vit-G.safetensors";
+      sha256 = "sha256-om9zavB7s0GoPf6iNxNTHQV1dg6O2UfGjLMaTGLZyQs=";
+    });
+
+    # SDXL plus model
+    ip-adapter-plus_sdxl_vit-h = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus_sdxl_vit-h.safetensors";
+      sha256 = "sha256-P1BiuEAMlLcVlmWyG6XGKs3NdoImJ0PX8q7+3vAOZYE=";
+    });
+
+    # SDXL face model
+    ip-adapter-plus-face_sdxl_vit-h = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus-face_sdxl_vit-h.safetensors";
+      sha256 = "sha256-Z3rYhgIE99C/uhLSnmwx3tm+798+S70QJRg1fTGiksE=";
+    });
+
+    # vit-G SDXL model, requires bigG clip vision encoder
+    ip-adapter_sdxl = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_sdxl.safetensors";
+      sha256 = "sha256-uhACUp54NgTF8ybUnwEiAlOS0dIKyNVzs+6z5t6k67Y=";
+    });
+
+    ## FaceID models (these require the insightface python package, and most require specific loras)
+
+    # base FaceID model
+    ip-adapter-faceid_sd15 = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid_sd15.bin";
+      sha256 = "sha256-IBNE4i5vVYSc8HynpuU9jDsAEyfGbLlxDWn9XaSKjac=";
+    });
+
+    # FaceID plus v2
+    ip-adapter-faceid-plusv2_sd15 = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sd15.bin";
+      sha256 = "sha256-JtDYah1g1syBHTuIYheLRh4e62Ueb+K3K6F6qVQR4xM=";
+    });
+
+    # text prompt style transfer for portraits
+    ip-adapter-faceid-portrait-v11_sd15 = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-portrait-v11_sd15.bin";
+      sha256 = "sha256-pIy0+J7RjgLGAA9lqp7+xFLofq7Uobyfz0pGDI0OO8Y=";
+    });
+
+    # SDXL base FaceID
+    ip-adapter-faceid_sdxl = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid_sdxl.bin";
+      sha256 = "sha256-9FX+0k4gfIeOweBGazSpadN7q4V8X6pOjSWaC0/2PX4=";
+    });
+
+    # SDXL plus v2
+    ip-adapter-faceid-plusv2_sdxl = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sdxl.bin";
+      sha256 = "sha256-xpRdgrVDcAzDzLuY02O4N+nFligWB4V8dLcTqHba9fs=";
+    });
+
+    # SDXL text prompt style transfer
+    ip-adapter-faceid-portrait_sdxl = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-portrait_sdxl.bin";
+      sha256 = "sha256-VjHOeCTNr9LbN8XoW5hXMKlf9ZxbT8gMK3mwvuVxFRI=";
+    });
+
+    # very strong style transfer SDXL only
+    ip-adapter-faceid-portrait_sdxl_unnorm = (fetchModel {
+      format = "bin";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-portrait_sdxl_unnorm.bin";
+      sha256 = "sha256-Igu4biBTk6PQQRYxy0c8rdvzX9NxvikFypAIgYFw21U=";
+    });
+
   };
   embeddings = {};
   loras = {
@@ -205,6 +425,32 @@ in {
       url = "https://civitai.com/api/download/models/244808?type=Model&format=SafeTensor";
       format = "safetensors";
       sha256 = "sha256-gKpnkTrryJoBvhkH5iEi8zn9/ucMFxq3upZ8Xl/PJ+o=";
+    });
+
+    ip-adapter-faceid_sd15_lora = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid_sd15_lora.safetensors";
+      sha256 = "sha256-cGmfDb+t1H3h+B0mPPTIa9S3Jx2EEwSvmzQLOn846Go=";
+    });
+
+    ip-adapter-faceid-plusv2_sd15_lora = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sd15_lora.safetensors";
+      sha256 = "sha256-ir/4ehWgSfPgGGwugsHI53eDuvLPtj80xBJlYFLrV7A=";
+    });
+
+    # SDXL FaceID LoRA
+    ip-adapter-faceid_sdxl_lora = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid_sdxl_lora.safetensors";
+      sha256 = "sha256-T8+T1ujcjdGPX55RyDBvNpSG7QqgeAremWEwiv9/DWQ=";
+    });
+
+    # SDXL plus v2 LoRA
+    ip-adapter-faceid-plusv2_sdxl_lora = (fetchModel {
+      format = "safetensors";
+      url = "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sdxl_lora.safetensors";
+      sha256 = "sha256-8ktLstrWY4oJwA8VHN6EmRuvN0QJOFvLq1PBhxowy3s=";
     });
 
   };
@@ -257,13 +503,8 @@ in {
     # https://openmodeldb.info/models/4x-UltraSharp
     kim2091-4k-ultrasharp = (fetchModel {
       format = "pth";
-      url = "https://huggingface.co/Kim2091/UltraSharp/blob/main/4x-UltraSharp.pth";
-      # sha256 = "sha256-pYEiMfyTa0KvCKXtunhBlUldMD1bMkjCRInvDEAh/gE=";
-      # sha256 = "sha256-JZDtqx4ZEUbexkONl9z2BV8viMFmRnalj6NfoDeYNgU=";
-      sha256 = "sha256-/bsIyNqkATcNTyj4rVQzEwQYphVXgUBVXVQo9eroJj0=";
-      # SHA256 reported by civitai.com.  Unsure how these relate.  It is not
-      # base64 encoded.
-      # "A5812231FC936B42AF08A5EDBA784195495D303D5B3248C24489EF0C4021FE01"
+      url = "https://huggingface.co/Kim2091/UltraSharp/resolve/main/4x-UltraSharp.pth";
+      sha256 = "sha256-pYEiMfyTa0KvCKXtunhBlUldMD1bMkjCRInvDEAh/gE=";
     });
 
   };
@@ -276,6 +517,40 @@ in {
 
   };
   vae_approx = {};
+
+  insightface = {
+    inswapper_128 = (fetchModel {
+      format = "onnx";
+      url = "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx";
+      sha256 = "sha256-5KPwjHU8ty0E4Qqg99vj3uu/OVZ9Tq1tzgjpiqSeFq8=";
+    });
+
+  };
+
+  facerestore_models = {
+    "GFPGANv1.3" = (fetchModel {
+      format = "pth";
+      url = "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/facerestore_models/GFPGANv1.3.pth";
+      sha256 = "sha256-yVOojycnyFw9mucuK9SEa7r1n+aXKtlBMOI+cBdSSnA=";
+    });
+    "GFPGANv1.4" = (fetchModel {
+      format = "pth";
+      url = "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/facerestore_models/GFPGANv1.4.pth";
+      sha256 = "sha256-4s1HA6sU9NAf0Tg6iosmb5pYM9rO6OannTvyGhtr5a0=";
+    });
+    "codeformer-v0.1.0" = (fetchModel {
+      format = "pth";
+      url = "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/facerestore_models/codeformer-v0.1.0.pth";
+      sha256 = "sha256-EAnlN+DCoH1Mq85jVfU8tmdnzUtCl+x6SmTKS4pWhLc=";
+    });
+    GPEN-BFR-512 = (fetchModel {
+      format = "onnx";
+      url = "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/facerestore_models/GPEN-BFR-512.onnx";
+      sha256 = "sha256-v4CsuOkbqIUuPwElBb4sO2zWs+7V7GBePbh4Y8TnTU4=";
+    });
+
+  };
+
 }
 
 
