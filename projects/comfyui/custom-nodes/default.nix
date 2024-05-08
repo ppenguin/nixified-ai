@@ -1,9 +1,10 @@
 { lib
-, pkgs
+, stdenv
+, python3Packages
+, fetchFromGitHub
 }@args:
 
 let
-  inherit (pkgs) fetchFromGitHub stdenv;
   # Patches don't apply to $src, and as with many scripting languages that don't
   # have a build output per se, we just want the script source itself placed
   # into $out.  So just copy everything into $out instead of from $src so we can
@@ -13,7 +14,7 @@ let
     shopt -s extglob
     cp -r ./!($out|$src) $out/
   '';
-  mkComfyUICustomNodes = args: pkgs.stdenv.mkDerivation ({
+  mkComfyUICustomNodes = args: stdenv.mkDerivation ({
     installPhase = ''
       runHook preInstall
       mkdir -p $out/
@@ -30,10 +31,30 @@ in {
     pname = "comfyui-controlnet-aux";
     version = "unstable-2024-04-05";
     pyproject = true;
-    passthru.dependencies = with pkgs.python3Packages; [
+    passthru.dependencies = with python3Packages; [
+      addict
+      albumentations
+      einops
+      filelock
+      ftfy
+      fvcore
+      importlib-metadata
       matplotlib
+      mediapipe
+      numpy
+      omegaconf
       opencv4
+      pillow
+      python-dateutil
+      pyyaml
       scikit-image
+      scikit-learn
+      scipy
+      svglib
+      torchvision
+      trimesh
+      yacs
+      yapf
     ];
     src = fetchFromGitHub {
       owner = "Fannovel16";

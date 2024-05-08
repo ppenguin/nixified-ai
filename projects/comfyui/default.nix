@@ -34,7 +34,6 @@ in
       ]);
     };
 
-    customNodes = import ./custom-nodes { inherit lib pkgs; };
     models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
 
     # we require a python3 with an appropriately overriden package set depending on GPU
@@ -43,6 +42,12 @@ in
 
     # everything here needs to be parametrised over gpu vendor
     legacyPkgs = vendor: let
+      customNodes = import ./custom-nodes {
+        inherit lib;
+        inherit (pkgs) stdenv fetchFromGitHub;
+        python3Packages = python3Variants."${vendor}";
+      };
+
       # withConfig ::
       #   { models :: attrsOf fetchedModels
       #   , customNodes :: attrsOf fetchedCustomNodes
