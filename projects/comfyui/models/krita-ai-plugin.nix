@@ -39,6 +39,7 @@ let
         OmniSR_X4_DIV2K;
     };
   };
+
   optional = {
     controlnet = {
       inherit (models.controlnet)
@@ -88,5 +89,5 @@ let
 
   };
 in {
-  inherit required optional;
+  inherit optional required;
 }

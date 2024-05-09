@@ -43,57 +43,74 @@ in
     # everything here needs to be parametrised over gpu vendor
     legacyPkgs = vendor: let
       customNodes = import ./custom-nodes {
-        inherit lib;
+        inherit lib models;
         inherit (pkgs) stdenv fetchFromGitHub;
         python3Packages = python3Variants."${vendor}";
       };
+      plugins = { inherit models customNodes; };
 
       # withConfig ::
-      #   { models :: attrsOf fetchedModels
-      #   , customNodes :: attrsOf fetchedCustomNodes
-      #   , inputPath :: str
-      #   , outputPath :: str
-      #   , tempPath :: str
-      #   , userPath :: str
-      #   , ...
-      #   }
-      #   -> drv
+      #   (Plugins
+      #     -> (Plugins //
+      #       { basePath :: str
+      #       , inputPath :: str
+      #       , outputPath :: str
+      #       , tempPath :: str
+      #       , userPath :: str
+      #       })
+      #   ) -> drv
       # where
-      #   `attrsOf fetchedModels` here is the type of what is in ./models/default.nix, i.e
-      #   a three levels deep attrset of the form
+      #   Plugins =
+      #     { models :: attrsOf fetchedModels
+      #     , customNodes :: attrsOf fetchedCustomNodes
+      #     }
+      #   `attrsOf fetchedModels` is the type of what is in ./models/default.nix,
+      #     i.e. a three levels deep attrset of the form
       #     `{ "${type}" = { "${pname-minus-ext}" = fetchModel model; ... }; ... }`
       #     where
-      #       `model = { format = _; url = _; sha256 = _; }`
-      #       `fetchModel model :: { name :: str, format :: str, path :: str }`
-      #       `fetchModel` comes from `./models/fetch-model.nix`
-      #   `fetchedCustomNodes :: attrsOf drv` (see ./custom-nodes/default.nix):
-      withConfig = mkComfyUIVariant python3Variants."${vendor}".python;
-      withPlugins = f: g: withConfig {
-        models = f models;
-        customNodes = g customNodes;
-      };
-      # we define this in terms of `withPlugins` to serve as an example of its usage
-      krita-server = f: withPlugins
-        (models: f models // import ./models/krita-ai-plugin.nix models)
-        (import ./custom-nodes/krita-ai-plugin.nix);
+      #       model = { format = _; url = _; sha256 = _; }
+      #       fetchModel model :: { name :: str, format :: str, path :: str }
+      #       `fetchModel` comes from ./models/fetch-model.nix
+      #   for `fetchedCustomNodes`, see ./custom-nodes/default.nix
+      withConfig = f:
+        mkComfyUIVariant python3Variants."${vendor}".python (f plugins);
+      # withPlugins :: (Plugins -> Plugins) -> drv
+      # we can be a little pedantic about the interface here to catch basic errors early
+      withPlugins = f: withConfig (pgns: { inherit (f pgns) customNodes models; });
+
+      # takes a list of model sets and merges them
+      mergeModels = import ./models/merge-sets.nix;
+
+      kritaModels = import ./models/krita-ai-plugin.nix models;
+      kritaCustomNodes = import ./custom-nodes/krita-ai-plugin.nix customNodes;
+      # There are reasons one might want to add more models, but extra custom nodes add
+      # nothing to the krita plugin, so this takes a function over models only.
+      kritaServerWithModels = f:
+        withPlugins (_: {
+          # if you want the full set (required + optional) plus some extra models,
+          # you can do `kritaServerWithModels (ms: (import ./models/krita-ai-plugin.nix ms).optional)`
+          models = mergeModels [ kritaModels.required (f models) ];
+          customNodes = kritaCustomNodes;
+        });
     in {
       inherit
         customNodes
+        mergeModels
         models
+        kritaModels
+        kritaServerWithModels
         withConfig
         withPlugins;
-      krita-server = krita-server (_: {}) // {
-        # is this a bad pattern?
-        withExtraModels = krita-server;
-      };
     };
   in {
     legacyPackages.comfyui.amd = legacyPkgs "amd";
     legacyPackages.comfyui.nvidia = legacyPkgs "nvidia";
 
     packages = {
-      krita-comfyui-server-amd = (legacyPkgs "amd").krita-server;
-      krita-comfyui-server-nvidia = (legacyPkgs "nvidia").krita-server;
+      krita-comfyui-server-amd = with legacyPkgs "amd"; kritaServerWithModels (_: kritaModels.optional);
+      krita-comfyui-server-amd-minimal = with legacyPkgs "amd"; kritaServerWithModels (_: {});
+      krita-comfyui-server-nvidia = with legacyPkgs "nvidia"; kritaServerWithModels (_: kritaModels.optional);
+      krita-comfyui-server-nvidia-minimal = with legacyPkgs "nvidia"; kritaServerWithModels (_: {});
     };
   };
 

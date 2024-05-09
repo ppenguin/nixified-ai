@@ -2,6 +2,7 @@
 , stdenv
 , python3Packages
 , fetchFromGitHub
+, models
 }@args:
 
 let
@@ -22,7 +23,7 @@ let
       runHook postInstall
     '';
 
-    passthru.dependencies = [];
+    passthru.dependencies = { pkgs = []; models = {}; };
   } // args);
 in {
   # https://github.com/Fannovel16/comfyui_controlnet_aux
@@ -31,7 +32,7 @@ in {
     pname = "comfyui-controlnet-aux";
     version = "unstable-2024-04-05";
     pyproject = true;
-    passthru.dependencies = with python3Packages; [
+    passthru.dependencies.pkgs = with python3Packages; [
       addict
       albumentations
       einops
@@ -43,6 +44,7 @@ in {
       mediapipe
       numpy
       omegaconf
+      # onnxruntime
       opencv4
       pillow
       python-dateutil
@@ -125,5 +127,45 @@ in {
       fetchSubmodules = true;
     };
   };
+
+  # https://github.com/Gourieff/comfyui-reactor-node
+  # Fast and simple face swap node(s).
+  reactor-node = (mkComfyUICustomNodes {
+    pname = "comfyui-reactor-node";
+    version = "unstable-2024-04-07";
+    pyproject = true;
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        insightface
+        onnxruntime
+      ];
+      models = {
+        # expects these directories to exist:
+        #   models/reactor/faces
+        #   models/facerestore_models
+        #   models/ultralytics/bbox
+        #   models/ultralytics/segm
+        #   models/sams
+        # but it also seems to want arbitrary write-access to the models dir......
+
+        insightface = { inherit (models.insightface) inswapper_128; };
+        facerestore_models = {
+          inherit (models.facerestore_models)
+            "GFPGANv1.3"
+            "GFPGANv1.4"
+            "codeformer-v0.1.0"
+            GPEN-BFR-512;
+        };
+      };
+    };
+
+    src = fetchFromGitHub {
+      owner = "Gourieff";
+      repo = "comfyui-reactor-node";
+      rev = "05bf228e623c8d7aa5a33d3a6f3103a990cfe09d";
+      hash = "sha256-2IrpOp7N2GR1zA4jgMewAp3PwTLLZa1r8D+/uxI8yzw=";
+      fetchSubmodules = true;
+    };
+  });
 }
 

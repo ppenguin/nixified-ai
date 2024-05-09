@@ -11,6 +11,7 @@ in
 , symlinkJoin
 , models
 , customNodes
+, basePath ? defaultBasePath
 , inputPath ? "${defaultBasePath}/input"
 , outputPath ? "${defaultBasePath}/output"
 , tempPath ? "${defaultBasePath}/temp"
@@ -18,39 +19,45 @@ in
 }:
 
 let
-  # turn fetched custom nodes and models into derivations
-  customNodesDrv = let
-    deps = nodes: with builtins; lib.pipe nodes [
-      attrValues
-      (map (v: v.dependencies))
-      concatLists
-    ];
-  in (linkFarm "comfyui-custom-nodes" customNodes)
-    .overrideAttrs (old: old // { dependencies = deps customNodes; });
+  inherit (lib.attrsets) concatMapAttrs;
+  mergeModels = import ./models/merge-sets.nix;
 
+  dependencies = with builtins; lib.pipe customNodes [
+    attrValues
+    (map (v: v.dependencies))
+    (foldl'
+      ({ pkgs, models }: x: {
+        pkgs = pkgs ++ (x.pkgs or []);
+        models = mergeModels [ models (x.models or {}) ];
+      })
+      { pkgs = []; models = {}; })
+  ];
+  # turn fetched custom nodes and models into derivations
+  customNodesDrv = linkFarm "comfyui-custom-nodes" customNodes;
   modelsDrv = let
-    inherit (lib.attrsets) concatMapAttrs;
     concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
     toNamePath = concatMapModels (type: name: fetched: {
       "${type}/${name}.${fetched.format}" = fetched.path;
     });
-  in linkFarm "comfyui-models" (toNamePath models);
+  in linkFarm "comfyui-models" (toNamePath (mergeModels [ models dependencies.models ]));
 
   config-data = {
-    comfyui = {
-      base_path = "${modelsDrv}";
-      checkpoints = "${modelsDrv}/checkpoints";
-      clip = "${modelsDrv}/clip";
-      clip_vision = "${modelsDrv}/clip_vision";
-      configs = "${modelsDrv}/configs";
-      controlnet = "${modelsDrv}/controlnet";
-      embeddings = "${modelsDrv}/embeddings";
-      inpaint = "${modelsDrv}/inpaint";
-      ipadapter = "${modelsDrv}/ipadapter";
-      loras = "${modelsDrv}/loras";
-      upscale_models= "${modelsDrv}/upscale_models";
-      vae = "${modelsDrv}/vae";
-      vae_approx = "${modelsDrv}/vae_approx";
+    comfyui = let
+      modelsDir = "${modelsDrv}";
+    in {
+      base_path = basePath;
+      checkpoints = "${modelsDir}/checkpoints";
+      clip = "${modelsDir}/clip";
+      clip_vision = "${modelsDir}/clip_vision";
+      configs = "${modelsDir}/configs";
+      controlnet = "${modelsDir}/controlnet";
+      embeddings = "${modelsDir}/embeddings";
+      inpaint = "${modelsDir}/inpaint";
+      ipadapter = "${modelsDir}/ipadapter";
+      loras = "${modelsDir}/loras";
+      upscale_models= "${modelsDir}/upscale_models";
+      vae = "${modelsDir}/vae";
+      vae_approx = "${modelsDir}/vae_approx";
     };
   };
 
@@ -74,11 +81,10 @@ let
     scipy
     psutil
     tqdm
-  ] ++ customNodesDrv.dependencies);
+  ] ++ dependencies.pkgs);
 
   executable = writers.writeDashBin "comfyui" ''
-    cd $out && \
-    ${pythonEnv}/bin/python comfyui \
+    ${pythonEnv}/bin/python $out/comfyui \
       --input-directory ${inputPath} \
       --output-directory ${outputPath} \
       --extra-model-paths-config ${modelPathsFile} \
@@ -113,10 +119,6 @@ in stdenv.mkDerivation rec {
     mv $out/main.py $out/comfyui
     echo "Copying ${modelPathsFile} to $out"
     cp ${modelPathsFile} $out/extra_model_paths.yaml
-    echo "Setting up input and output folders"
-    ln -s ${inputPath} $out/input
-    ln -s ${outputPath} $out/output
-    mkdir -p $out/${tempPath}
     echo "Setting up custom nodes"
     ln -snf ${customNodesDrv} $out/custom_nodes
     echo "Copying executable script"
@@ -126,7 +128,6 @@ in stdenv.mkDerivation rec {
     # TODO: Evaluate if we can get rid of this on the latest version - there
     # seems to be a lot more arguments available now.
     substituteInPlace $out/folder_paths.py --replace "if not os.path.exists(input_directory):" "if False:"
-    substituteInPlace $out/nodes.py --replace "os.listdir(custom_node_path)" "os.listdir(os.path.realpath(custom_node_path))"
     substituteInPlace $out/folder_paths.py --replace 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "user")' '"${userPath}"'
     runHook postInstall
   '';
