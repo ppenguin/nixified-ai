@@ -82,7 +82,7 @@ in
       kritaServerWithModels = f:
         withPlugins (_: {
           # if you want the full set (required + optional) plus some extra models,
-          # you can do `kritaServerWithModels (ms: (import ./models/krita-ai-plugin.nix ms).optional)`
+          # you can do `kritaServerWithModels (_: kritaModels.optional)`
           models = mergeModels [ kritaModels.required (f models) ];
           customNodes = kritaCustomNodes;
         });
