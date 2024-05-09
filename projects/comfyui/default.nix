@@ -109,26 +109,4 @@ in
       krita-comfyui-server-nvidia-minimal = nvidia.kritaServerWithModels (_: {});
     };
   };
-
-  flake.nixosModules = let
-    packageModule = pkgAttrName: { pkgs, ... }: {
-      services.comfyui.package = withSystem pkgs.system (
-        { config, ... }: lib.mkOptionDefault config.packages.${pkgAttrName}
-      );
-    };
-  in {
-    comfyui = ./nixos;
-    comfyui-amd = {
-      imports = [
-        config.flake.nixosModules.comfyui
-        (packageModule "comfyui-amd")
-      ];
-    };
-    comfyui-nvidia = {
-      imports = [
-        config.flake.nixosModules.comfyui
-        (packageModule "comfyui-nvidia")
-      ];
-    };
-  };
 }
