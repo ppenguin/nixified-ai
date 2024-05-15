@@ -128,6 +128,7 @@ in {
     };
   };
 
+  ## Broken due to runtime mischief
   # https://github.com/Gourieff/comfyui-reactor-node
   # Fast and simple face swap node(s).
   reactor-node = (mkComfyUICustomNodes {
@@ -166,6 +167,8 @@ in {
       hash = "sha256-2IrpOp7N2GR1zA4jgMewAp3PwTLLZa1r8D+/uxI8yzw=";
       fetchSubmodules = true;
     };
+
+    meta.broken = true;
   });
 }
 
