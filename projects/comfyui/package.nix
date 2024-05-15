@@ -19,9 +19,9 @@ in
 }:
 
 let
-  inherit (lib.attrsets) concatMapAttrs;
   mergeModels = import ./models/merge-sets.nix;
 
+  # aggregate all custom nodes' dependencies
   dependencies = with builtins; lib.pipe customNodes [
     attrValues
     (map (v: v.dependencies))
@@ -32,11 +32,16 @@ let
       })
       { pkgs = []; models = {}; })
   ];
-  # turn fetched custom nodes and models into derivations
+  # create a derivation for our custom nodes
   customNodesDrv = linkFarm "comfyui-custom-nodes" customNodes;
+  # create a derivation for our models
   modelsDrv = let
+    inherit (lib.attrsets) concatMapAttrs;
     concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
-    toNamePath = concatMapModels (type: name: fetched: {
+    # create a flattened set from our nested model set;
+    # attribute name is the file path to the model;
+    # value is the store path of the fetched model.
+    toNamePath = concatMapModels (type: _name: fetched: {
       "${type}/${fetched.name}" = fetched;
     });
   in linkFarm "comfyui-models" (toNamePath (mergeModels [ models dependencies.models ]));
