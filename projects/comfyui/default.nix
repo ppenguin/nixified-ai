@@ -92,6 +92,7 @@ in
         mergeModels
         models
         kritaModels
+        kritaCustomNodes
         kritaServerWithModels
         withConfig
         withPlugins;
