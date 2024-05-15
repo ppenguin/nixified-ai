@@ -34,7 +34,7 @@ in
       ]);
     };
 
-    models = import ./models { inherit (pkgs) fetchurl; inherit lib; };
+    models = import ./models { inherit lib; };
 
     # we require a python3 with an appropriately overriden package set depending on GPU
     mkComfyUIVariant = python3: args:

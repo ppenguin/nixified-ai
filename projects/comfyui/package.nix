@@ -37,7 +37,7 @@ let
   modelsDrv = let
     concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
     toNamePath = concatMapModels (type: name: fetched: {
-      "${type}/${name}.${fetched.format}" = fetched.path;
+      "${type}/${fetched.name}" = fetched;
     });
   in linkFarm "comfyui-models" (toNamePath (mergeModels [ models dependencies.models ]));
 
