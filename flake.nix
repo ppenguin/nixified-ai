@@ -53,7 +53,6 @@
       ];
       debug = true;
       imports = [
-        ./checks
         hercules-ci-effects.flakeModule
 #        ./modules/nixpkgs-config
         ./overlays
