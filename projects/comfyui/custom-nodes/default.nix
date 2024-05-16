@@ -45,7 +45,7 @@ in {
       mediapipe
       numpy
       omegaconf
-      # onnxruntime
+      onnxruntime
       opencv4
       pillow
       python-dateutil
