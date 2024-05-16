@@ -59,6 +59,37 @@ in {
       yacs
       yapf
     ];
+
+    # for some reason, this custom node has its own collection of models, so we
+    # just go with it and put them where it expects, not bothering to add them
+    # as general model dependencies.
+    # TODO: there are probably more models to add
+    installPhase = let
+      yolox_l = import <nix/fetchurl.nix> {
+        name = "yolox_l.onnx";
+        url = "https://huggingface.co/yzd-v/DWPose/resolve/main/yolox_l.onnx";
+        sha256 = "sha256-eGCued5siaPB63KumidWwMz74Et3kbtYgK+r2XhVpBE=";
+      };
+      dw-ll_ucoco_384 = import <nix/fetchurl.nix> {
+        name = "dw-ll_ucoco_384.onnx";
+        url = "https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_ucoco_384.onnx";
+        sha256 = "sha256-ck9P8kOe1hr7hvuKGVHsOcYiBoKAO0qL1PWYzZE7GEM=";
+      };
+    in ''
+      runHook preInstall
+      mkdir -p $out/ckpts/yzd-v/DWPose
+      ${install}
+      ln -s ${yolox_l} $out/ckpts/yzd-v/DWPose/${yolox_l.name}
+      ln -s ${dw-ll_ucoco_384} $out/ckpts/yzd-v/DWPose/${dw-ll_ucoco_384.name}
+      runHook postInstall
+    '';
+
+    # ckpts/yzd-v/DWPose/yolox_l.onnx
+    # https://huggingface.co/yzd-v/DWPose/resolve/main/yolox_l.onnx
+
+    # ckpts/yzd-v/DWPose/dw-ll_ucoco_384.onnx
+    # https://huggingface.co/yzd-v/DWPose/blob/main/dw-ll_ucoco_384.onnx
+
     src = fetchFromGitHub {
       owner = "Fannovel16";
       repo = "comfyui_controlnet_aux";
