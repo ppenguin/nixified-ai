@@ -43,7 +43,7 @@ in
     # everything here needs to be parametrised over gpu vendor
     legacyPkgs = vendor: let
       customNodes = import ./custom-nodes {
-        inherit models;
+        inherit lib models;
         inherit (pkgs) stdenv fetchFromGitHub unzip;
         python3Packages = python3Variants."${vendor}";
       };
