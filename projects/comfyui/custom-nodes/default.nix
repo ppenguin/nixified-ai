@@ -2,6 +2,7 @@
 , stdenv
 , python3Packages
 , fetchFromGitHub
+, unzip
 , models
 }@args:
 
@@ -96,6 +97,34 @@ in {
       rev = "417d806e7a2153c98613e86407c1941b2b348e88";
       hash = "sha256-yuZWc2PsgMRCFSLTqniZDqZxevNt2/na7agKm7Xhy7Y=";
       fetchSubmodules = true;
+    };
+
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        insightface
+        onnxruntime
+      ];
+      models = {
+        insightface = { inherit (models.insightface) inswapper_128; };
+        "insightface/models" = {
+          buffalo_l = let
+            name = "buffalo_l";
+            url = "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip";
+          in stdenv.mkDerivation {
+            inherit name;
+            buildInputs = [ unzip ];
+            phases = [ "installPhase" ];
+            installPhase = ''
+              mkdir -p $out
+              unzip $src -d $out/
+            '';
+            src = import <nix/fetchurl.nix> {
+              inherit name url;
+              hash = "sha256-gP/jfYpZQNWac4TCAaKjjUdB8vPFHu9G67KCGKewyi8=";
+            };
+          };
+        };
+      };
     };
   };
 
