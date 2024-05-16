@@ -33,16 +33,32 @@ let
       { pkgs = []; models = {}; })
   ];
   # create a derivation for our custom nodes
-  customNodesDrv = linkFarm "comfyui-custom-nodes" customNodes;
+  customNodesDrv = lib.trivial.throwIfNot (lib.lists.all lib.isDerivation (builtins.attrValues customNodes)) ''
+      `customNodes` should be a set of custom node derivations in the form of `{ my-node = «derivation»; ... }`
+    ''
+    (linkFarm "comfyui-custom-nodes" customNodes);
   # create a derivation for our models
-  modelsDrv = let
+  modelsDrv = with builtins; let
     inherit (lib.attrsets) concatMapAttrs;
     concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
     # create a flattened set from our nested model set;
     # attribute name is the file path to the model;
     # value is the store path of the fetched model.
-    toNamePath = concatMapModels (type: _name: fetched: {
-      "${type}/${fetched.name}" = fetched;
+    toNamePath = concatMapModels (type: _name: fetched: let
+      # The structure is a bit convoluted so mistakes are easy to make but hard to find. Some helpful information may prove helpful.
+      fetchedStr = "{ ${concatStringsSep " " (map (n: "${n} = «${fetched.type or typeOf fetched."${n}"}»;") (lib.attrNames fetched))} }";
+      name = fetched.name or (throw ''
+        no attribute "name" in `${type}.${_name} = ${fetchedStr}`
+        Hint:
+          "${type}" should be the model's type,
+          "${_name}" should be the model's name, and
+          `${type}.${_name}` should be a derivation.
+        Tip: Make sure your models are defined inside their respecive type attribute and that the model set doesn't include other types of assets.
+        The model set should look something like this: `{ checkpoints = { ... }; vae.sdxl_vae = «derivation»; ... }`
+      ''
+      );
+    in {
+      "${type}/${name}" = fetched;
     });
   in linkFarm "comfyui-models" (toNamePath (mergeModels [ models dependencies.models ]));
 
