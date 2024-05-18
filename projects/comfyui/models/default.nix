@@ -449,6 +449,22 @@ in {
       sha256 = "sha256-8ktLstrWY4oJwA8VHN6EmRuvN0QJOFvLq1PBhxowy3s=";
     });
 
+    # https://civitai.com/models/199663/indigenous-mix-by-noerman
+    # SD 1.5
+    indigenous-mix-by-noerman = (fetchModel {
+      name = "indigenous-mix-by-noerman.safetensors";
+      url = "https://civitai.com/api/download/models/227236?type=Model&format=SafeTensor";
+      sha256 = "sha256-9OmsnpnknlfMhnWNwRD+RlYOAyYChF7+OgGCU6GGafY=";
+    });
+
+    # https://civitai.com/models/201636/south-america-indigenous-mix-by-noerman
+    # SD 1.5
+    south-america-indigenous-mix-by-noerman = (fetchModel {
+      name = "south-america-indigenous-mix-by-noerman.safetensors";
+      url = "https://civitai.com/api/download/models/226955?type=Model&format=SafeTensor";
+      sha256 = "sha256-HMmTe9ALD+b35BB80lYfM2UMlJsrlYbIVKCLLJ3sJzc=";
+    });
+
   };
   # Upscaler comparisons can be found here:
   # https://civitai.com/articles/636/sd-upscalers-comparison
