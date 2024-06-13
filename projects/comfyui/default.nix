@@ -49,6 +49,7 @@ in
       };
       plugins = { inherit models customNodes; };
 
+      # configuration options all have defaults
       # withConfig ::
       #   (plugins
       #     -> (plugins //
@@ -57,6 +58,7 @@ in
       #       , outputPath :: str
       #       , tempPath :: str
       #       , userPath :: str
+      #       , ...
       #       })
       #   ) -> drv
       # where
@@ -68,9 +70,9 @@ in
       #   `attrsOf fetchedCustomNodes`, is the type of what is in ./custom-nodes/default.nix
       withConfig = f:
         mkComfyUIVariant python3Variants."${vendor}".python (f plugins);
-      # withplugins :: (plugins -> plugins) -> drv
-      # we can be a little explicit about the interface here
-      withPlugins = f: withConfig (pgns: { inherit (f pgns) customNodes models; });
+      # withPlugins :: (plugins -> plugins) -> drv
+      # withModels :: (attrsOf fetchedModels -> attrsOf fetchedModels) -> drv
+      withModels = f: withConfig (pgns: { customNodes = []; models = f pgns.models; });
 
       # takes a list of model sets and merges them
       mergeModels = import ./models/merge-sets.nix;
@@ -80,7 +82,7 @@ in
       # There are reasons one might want to add more models, but extra custom nodes add
       # nothing to the krita plugin, so this takes a function over models only.
       kritaServerWithModels = f:
-        withPlugins (_: {
+        withConfig (_: {
           # if you want the full set (required + optional) plus some extra models,
           # you can do `kritaServerWithModels (_: kritaModels.optional)`
           models = mergeModels [ kritaModels.required (f models) ];
@@ -95,7 +97,7 @@ in
         kritaCustomNodes
         kritaServerWithModels
         withConfig
-        withPlugins;
+        withModels;
     };
     amd = legacyPkgs "amd";
     nvidia = legacyPkgs "nvidia";

@@ -7,14 +7,14 @@
 
 ---
 
-#### Discussion
+## Discussion
 
 Anyone interested in discussing nixified.ai in realtime can join our matrix channel
 
 - In a Matrix client you can type `/join #nixified.ai:matrix.org`
 - Via the web you can join via https://matrix.to/#/#nixified.ai:matrix.org
 
-#### The Goal
+## The Goal
 
 The goal of nixified.ai is to simplify and make available a large repository of
 AI executable code that would otherwise be impractical to run yourself, due to
@@ -24,14 +24,54 @@ The outputs run primarily on Linux, but can also run on Windows via [NixOS-WSL](
 
 The main outputs of the `flake.nix` at the moment are as follows:
 
-#### [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
+## [ComfyUI](https://github.com/comfyanonymous/ComfyUI) ( A modular, node-based Stable Diffusion WebUI )
+
+If you want to quickly get up and running, you have the option of using the packages meant to serve the [Krita AI plugin](https://github.com/Acly/krita-ai-diffusion), but the flake also provides ways to customise your setup.
+
+`export vendor=amd` or `export vendor=nvidia` depending on your GPU.
+
+### Pre-configured server
+
+If you want to quickly get started with a pre-configured setup, you can run these ones made to serve the Krita plugin (Krita is not required to use it):
+- `nix run .#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
+- `nix run .#krita-comfyui-server-${vendor}` - a fully featured server to provide all functionality available through the plugin
+
+Personal model sets and custom nodes can be easily defined by referencing [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix, using `mergeModels` to merge model sets and the `//` operator to merge custom nodes.
+
+### Custom setup
+
+You can use the following utilities from `legacyPackages.x86_64-linux.comfyui.${vendor}`:
+- `withConfig` - a function which takes as an argument a function from available `models` and `customNodes` to a configuration, including which models and custom nodes you want to use - for example: `withConfig (plugins: { outputPath = "/tmp/comfyui-outputs"; customNodes = { inherit (plugins.customNodes) ultimate-sd-upscale; }; models.checkpoints = { inherit (plugins.models.checkpoints) pony-xl-v6; }; })`
+- `kritaModels.required` - misc models expected by the plugin
+- `kritaModels.optional` - misc models needed for all optional features of the plugin
+- `kritaServerWithModels` - a function which takes as an argument a function from available `models` to models to include in the setup, e.g. `models: { checkpoints = { inherit (models.checkpoints) ...; }; ... }`
+- `mergeModels` - a utility function to merge model sets, which can be used like so: `kritaServerWithModels (ms: mergeModels [ kritaModels.optional (import ./my-models.nix {inherit lib;}) ])`
+
+and in the same attribute set you will also find these:
+- `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))
+- `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
+- `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
+
+The options of `withConfig` (and their defaults) can be seen in [./projects/comfyui/package.nix](./projects/comfyui/package.nix):
+```nix
+{
+  ...,
+  basePath ? "/var/lib/comfyui",
+  inputPath ? "${basePath}/input",
+  outputPath ? "${basePath}/output",
+  tempPath ? "${basePath}/temp",
+  userPath ? "${basePath}/user",
+}: ...
+```
+
+## [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
 
 - `nix run .#invokeai-amd`
 - `nix run .#invokeai-nvidia`
 
 ![invokeai](https://raw.githubusercontent.com/nixified-ai/flake/images/invokeai.webp)
 
-#### [textgen](https://github.com/oobabooga/text-generation-webui) ( Also called text-generation-webui: A WebUI for LLMs and LoRA training )
+## [textgen](https://github.com/oobabooga/text-generation-webui) ( Also called text-generation-webui: A WebUI for LLMs and LoRA training )
 
 - `nix run .#textgen-amd`
 - `nix run .#textgen-nvidia`
