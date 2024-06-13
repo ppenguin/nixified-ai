@@ -72,7 +72,7 @@ in
         mkComfyUIVariant python3Variants."${vendor}".python (f plugins);
       # withPlugins :: (plugins -> plugins) -> drv
       # withModels :: (attrsOf fetchedModels -> attrsOf fetchedModels) -> drv
-      withModels = f: withConfig (pgns: { customNodes = []; models = f pgns.models; });
+      withModels = f: withConfig (pgns: { customNodes = {}; models = f pgns.models; });
 
       # takes a list of model sets and merges them
       mergeModels = import ./models/merge-sets.nix;
