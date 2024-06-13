@@ -36,21 +36,21 @@ If you want to quickly get started with a pre-configured setup, you can run thes
 - `nix run .#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
 - `nix run .#krita-comfyui-server-${vendor}` - a fully featured server to provide all functionality available through the plugin
 
-Personal model sets and custom nodes can be easily defined by referencing [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix, using `mergeModels` to merge model sets and the `//` operator to merge custom nodes.
-
 ### Custom setup
 
 You can use the following utilities from `legacyPackages.x86_64-linux.comfyui.${vendor}`:
-- `withConfig` - a function which takes as an argument a function from available `models` and `customNodes` to a configuration, including which models and custom nodes you want to use - for example: `withConfig (plugins: { outputPath = "/tmp/comfyui-outputs"; customNodes = { inherit (plugins.customNodes) ultimate-sd-upscale; }; models.checkpoints = { inherit (plugins.models.checkpoints) pony-xl-v6; }; })`
-- `kritaModels.required` - misc models expected by the plugin
-- `kritaModels.optional` - misc models needed for all optional features of the plugin
-- `kritaServerWithModels` - a function which takes as an argument a function from available `models` to models to include in the setup, e.g. `models: { checkpoints = { inherit (models.checkpoints) ...; }; ... }`
+- `withConfig` - a function which takes as an argument a function from available `models` and `customNodes` (see below) to a configuration, including which models and custom nodes you want to use - for example: `withConfig (plugins: { outputPath = "/tmp/comfyui-outputs"; customNodes = { inherit (plugins.customNodes) ultimate-sd-upscale; }; models.checkpoints = { inherit (plugins.models.checkpoints) pony-xl-v6; }; })`
+- `kritaServerWithModels` - creates a comfyui setup suitable to use with the Krita plugin from a function taking `models` and returning a model set, e.g. `models: { checkpoints = { inherit (models.checkpoints) ...; }; ... }` or `_: kritaModels.optional`
 - `mergeModels` - a utility function to merge model sets, which can be used like so: `kritaServerWithModels (ms: mergeModels [ kritaModels.optional (import ./my-models.nix {inherit lib;}) ])`
 
 and in the same attribute set you will also find these:
 - `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))
 - `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
 - `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
+- `kritaModels.required` - models expected by the plugin
+- `kritaModels.optional` - models needed for all optional features of the plugin
+
+Personal model sets and custom nodes can be easily defined the same way it is done in [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix. Set hash to `""` and attempt to build to get the correct one. Use `mergeModels` to merge model sets and the `//` operator to merge custom nodes.
 
 The options of `withConfig` (and their defaults) can be seen in [./projects/comfyui/package.nix](./projects/comfyui/package.nix):
 ```nix
