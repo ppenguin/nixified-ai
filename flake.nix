@@ -29,13 +29,13 @@
   };
   outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem = { system, ... }: {
-        _module.args = {
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
+      perSystem = { system, ... }: let
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
         };
+      in {
+        _module.args = { inherit pkgs; };
         legacyPackages = {
           koboldai = builtins.throw ''
 
@@ -47,6 +47,7 @@
                    nix run github:nixified.ai/flake/0c58f8cba3fb42c54f2a7bf9bd45ee4cbc9f2477#koboldai
           '';
         };
+        formatter = pkgs.alejandra;
       };
       systems = [
         "x86_64-linux"
