@@ -1,12 +1,11 @@
-{ lib
-, stdenv
-, python3Packages
-, fetchFromGitHub
-, unzip
-, models
-}@args:
-
-let
+{
+  lib,
+  stdenv,
+  python3Packages,
+  fetchFromGitHub,
+  unzip,
+  models,
+}: let
   # Patches don't apply to $src, and as with many scripting languages that don't
   # have a build output per se, we just want the script source itself placed
   # into $out.  So just copy everything into $out instead of from $src so we can
@@ -16,16 +15,39 @@ let
     shopt -s extglob
     cp -r ./!($out|$src) $out/
   '';
-  mkComfyUICustomNodes = args: stdenv.mkDerivation ({
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/
-      ${install}
-      runHook postInstall
-    '';
+  mkComfyUICustomNodes = args:
+    stdenv.mkDerivation ({
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out/
+          ${install}
+          runHook postInstall
+        '';
 
-    passthru.dependencies = { pkgs = []; models = {}; };
-  } // args);
+        passthru.dependencies = {
+          pkgs = [];
+          models = {};
+        };
+      }
+      // args);
+
+  fetchUnzip = {
+    name,
+    url,
+    hash,
+  }:
+    stdenv.mkDerivation {
+      inherit name;
+      buildInputs = [unzip];
+      phases = ["installPhase"];
+      installPhase = ''
+        mkdir -p $out
+        unzip $src -d $out/
+      '';
+      src = import <nix/fetchurl.nix> {
+        inherit name url hash;
+      };
+    };
 in {
   # https://github.com/Fannovel16/comfyui_controlnet_aux
   # Nodes for providing ControlNet hint images.
@@ -114,6 +136,42 @@ in {
     };
   };
 
+  # https://github.com/cubiq/ComfyUI_InstantID
+  # only for SD XL
+  instantid = mkComfyUICustomNodes {
+    pname = "comfyui-instantid";
+    version = "unstable-2024-05-08";
+    src = fetchFromGitHub {
+      owner = "cubiq";
+      repo = "ComfyUI_InstantID";
+      rev = "d8c70a0cd8ce0d4d62e78653674320c9c3084ec1";
+      hash = "sha256-zLS2X4bW62Gqo48qB8kONJI1L0+tVKHLZV/fC2B5M9c=";
+    };
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        insightface
+        onnxruntime
+      ];
+      models = {
+        controlnet.instantid = import <nix/fetchurl.nix> {
+          name = "diffusion_pytorch_model.safetensors";
+          url = "https://huggingface.co/InstantX/InstantID/resolve/main/ControlNetModel/diffusion_pytorch_model.safetensors?download=true";
+          hash = "sha256-yBJ76fF0EB69r+6ZZNhWtJtjRDXPbao5bT9ZPPC7uwU=";
+        };
+        instantid.ipadapter = import <nix/fetchurl.nix> {
+          name = "ip-adapter.bin";
+          url = "https://huggingface.co/InstantX/InstantID/resolve/main/ip-adapter.bin?download=true";
+          hash = "sha256-ArNhjjbYA3hBZmYFIAmAiagTiOYak++AAqp5pbHFRuE=";
+        };
+        "insightface/models".buffalo_l = fetchUnzip {
+          name = "antelopev2";
+          url = "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip?download=true";
+          hash = "sha256-jhgvFPxugLO/o3WzPrbP9+4F2O92M+c40ciQIdzwxcU=";
+        };
+      };
+    };
+  };
+
   # https://github.com/cubiq/ComfyUI_IPAdapter_plus
   # This allows use of IP-Adapter models (IP meaning Image Prompt in this
   # context).  IP-Adapter models can out-perform fine tuned models
@@ -136,24 +194,11 @@ in {
         onnxruntime
       ];
       models = {
-        insightface = { inherit (models.insightface) inswapper_128; };
-        "insightface/models" = {
-          buffalo_l = let
-            name = "buffalo_l";
-            url = "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip";
-          in stdenv.mkDerivation {
-            inherit name;
-            buildInputs = [ unzip ];
-            phases = [ "installPhase" ];
-            installPhase = ''
-              mkdir -p $out
-              unzip $src -d $out/
-            '';
-            src = import <nix/fetchurl.nix> {
-              inherit name url;
-              hash = "sha256-gP/jfYpZQNWac4TCAaKjjUdB8vPFHu9G67KCGKewyi8=";
-            };
-          };
+        insightface = {inherit (models.insightface) inswapper_128;};
+        "insightface/models".buffalo_l = fetchUnzip {
+          name = "buffalo_l";
+          url = "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip";
+          hash = "sha256-gP/jfYpZQNWac4TCAaKjjUdB8vPFHu9G67KCGKewyi8=";
         };
       };
     };
@@ -191,7 +236,7 @@ in {
   ## Broken due to runtime mischief
   # https://github.com/Gourieff/comfyui-reactor-node
   # Fast and simple face swap node(s).
-  reactor-node = (mkComfyUICustomNodes {
+  reactor-node = mkComfyUICustomNodes {
     pname = "comfyui-reactor-node";
     version = "unstable-2024-04-07";
     pyproject = true;
@@ -209,13 +254,15 @@ in {
         #   models/sams
         # but it also seems to want arbitrary write-access to the models dir......
 
-        insightface = { inherit (models.insightface) inswapper_128; };
+        insightface = {inherit (models.insightface) inswapper_128;};
         facerestore_models = {
-          inherit (models.facerestore_models)
+          inherit
+            (models.facerestore_models)
             "GFPGANv1.3"
             "GFPGANv1.4"
             "codeformer-v0.1.0"
-            GPEN-BFR-512;
+            GPEN-BFR-512
+            ;
         };
       };
     };
@@ -229,6 +276,5 @@ in {
     };
 
     meta.broken = true;
-  });
+  };
 }
-
