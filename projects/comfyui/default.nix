@@ -1,4 +1,4 @@
-{ config, lib, withSystem, ... }:
+{ config, lib, ... }:
 
 let
   l = lib // config.flake.lib;
@@ -12,7 +12,7 @@ in
       # TODO: identify what we actually need
       (l.overlays.callManyPackages [
         ../../packages/mediapipe
-        ../../packages/accelerate
+        ../../packages/spandrel
       ])
       # what gives us a python with the overlays actually applied
       overlays.python-pythonFinal
@@ -97,7 +97,6 @@ in
         withConfig
         withPlugins;
     };
-
     amd = legacyPkgs "amd";
     nvidia = legacyPkgs "nvidia";
   in {

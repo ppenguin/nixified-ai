@@ -95,20 +95,20 @@
   pythonEnv = python3.withPackages (ps:
     with ps;
       [
-        torch
-        torchvision
-        transformers
-        safetensors
-        accelerate
-        torchsde
         aiohttp
         einops
         kornia
-        pyyaml
         pillow
-        scipy
         psutil
+        pyyaml
+        safetensors
+        scipy
+        spandrel
+        torch
+        torchsde
+        torchvision
         tqdm
+        transformers
       ]
       ++ dependencies.pkgs);
 
@@ -123,13 +123,13 @@
 in
   stdenv.mkDerivation {
     pname = "comfyui";
-    version = "unstable-2024-04-15";
+    version = "unstable-2024-06-12";
 
     src = fetchFromGitHub {
       owner = "comfyanonymous";
       repo = "ComfyUI";
-      rev = "45ec1cbe963055798765645c4f727122a7d3e35e";
-      hash = "sha256-oK+PwAJdvItK1NaRRJMNI4Oh/g4jNt1M5gWfXEy3C9g=";
+      rev = "605e64f6d3da44235498bf9103d7aab1c95ef211";
+      hash = "sha256-JU3SC1mnhsD+eD5eAX0RsEu0zoSxq8DfgR2RxX5ttb0=";
     };
 
     installPhase = ''

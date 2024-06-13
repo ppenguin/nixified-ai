@@ -103,13 +103,13 @@ in {
   # Provides nodes for doing better inpainting.
   inpaint-nodes = mkComfyUICustomNodes {
     pname = "comfyui-inpaint-nodes";
-    version = "unstable-2024-04-08";
+    version = "unstable-2024-06-02";
     pyproject = true;
     src = fetchFromGitHub {
       owner = "Acly";
       repo = "comfyui-inpaint-nodes";
-      rev = "8469f5531116475abb6d7e9c04720d0a29485a66";
-      hash = "sha256-Ane8zA9BN9QlRcQOwji4hZF2xoDPe/GvSqEyAPR+T28=";
+      rev = "8b800e41bd86ce8f47ec077c839f8b11e52872b2";
+      hash = "sha256-7WepT234aSMCiaUqiDBH/Xgd8ZvpEc/V5dG3Nld1ysI=";
       fetchSubmodules = true;
     };
   };
