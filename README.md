@@ -41,7 +41,7 @@ If you want to quickly get started with a pre-configured setup, you can run thes
 You can use the following utilities from `legacyPackages.x86_64-linux.comfyui.${vendor}`:
 - `withConfig` - a function which takes as an argument a function from available `models` and `customNodes` (see below) to a configuration, including which models and custom nodes you want to use - for example: `withConfig (plugins: { outputPath = "/tmp/comfyui-outputs"; customNodes = { inherit (plugins.customNodes) ultimate-sd-upscale; }; models.checkpoints = { inherit (plugins.models.checkpoints) pony-xl-v6; }; })`
 - `kritaServerWithModels` - creates a comfyui setup suitable to use with the Krita plugin from a function taking `models` and returning a model set, e.g. `models: { checkpoints = { inherit (models.checkpoints) ...; }; ... }` or `_: kritaModels.optional`
-- `mergeModels` - a utility function to merge model sets, which can be used like so: `kritaServerWithModels (ms: mergeModels [ kritaModels.optional (import ./my-models.nix {inherit lib;}) ])`
+- `mergeModels` - a utility function to merge model sets, which can be used like so: `kritaServerWithModels (ms: mergeModels [ kritaModels.optional (import ./my-models.nix) ])`
 
 and in the same attribute set you will also find these:
 - `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))

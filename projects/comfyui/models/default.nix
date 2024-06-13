@@ -1,5 +1,3 @@
-{ lib }:
-
 let
   fetchModel = import <nix/fetchurl.nix>;
 in {
