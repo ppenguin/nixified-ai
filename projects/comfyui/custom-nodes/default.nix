@@ -162,8 +162,11 @@ in {
           url = "https://huggingface.co/InstantX/InstantID/resolve/main/ip-adapter.bin?download=true";
           hash = "sha256-ArNhjjbYA3hBZmYFIAmAiagTiOYak++AAqp5pbHFRuE=";
         };
-        "insightface/models".buffalo_l = fetchUnzip {
-          name = "antelopev2";
+        # the archive has another antelopev2 subdir; otherwise this would have been
+        # "insightface/models".antelopev2 = fetchUnzip {
+        # and the 'name' would be 'antelopev2'
+        "insightface".antelopev2 = fetchUnzip {
+          name = "models";
           url = "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip?download=true";
           hash = "sha256-jhgvFPxugLO/o3WzPrbP9+4F2O92M+c40ciQIdzwxcU=";
         };
