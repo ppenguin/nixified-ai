@@ -32,37 +32,52 @@ If you want to quickly get up and running, you have the option of using the pack
 
 ### Pre-configured server
 
-If you want to quickly get started with a pre-configured setup, you can run these ones made to serve the Krita plugin (Krita is not required to use it):
+If you want to quickly get started with a pre-configured setup, you can run these ones made to serve the Krita plugin (Krita is not required to use them):
 - `nix run .#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
 - `nix run .#krita-comfyui-server-${vendor}` - a fully featured server to provide all functionality available through the plugin
 
+Note that the `comfyui-${vendor}` packages come with no models or custom nodes. They serve as a base to override with your own config, as shown below.
+
 ### Custom setup
 
-You can use the following utilities from `legacyPackages.x86_64-linux.comfyui.${vendor}`:
-- `withConfig` - a function which takes as an argument a function from available `models` and `customNodes` (see below) to a configuration, including which models and custom nodes you want to use - for example: `withConfig (plugins: { outputPath = "/tmp/comfyui-outputs"; customNodes = { inherit (plugins.customNodes) ultimate-sd-upscale; }; models.checkpoints = { inherit (plugins.models.checkpoints) pony-xl-v6; }; })`
-- `kritaServerWithModels` - creates a comfyui setup suitable to use with the Krita plugin from a function taking `models` and returning a model set, e.g. `models: { checkpoints = { inherit (models.checkpoints) ...; }; ... }` or `_: kritaModels.optional`
-- `mergeModels` - a utility function to merge model sets, which can be used like so: `kritaServerWithModels (ms: mergeModels [ kritaModels.optional (import ./my-models.nix) ])`
+To run your own setup, you can override the base package and add what you need: `nix eval --impure --expr 'with (builtins.getFlake "github:nixified-ai/flake"); packages.x86_64-linux."comfyui-'${vendor}'".override { models = ...; customNodes = ...; ... }`.
 
-and in the same attribute set you will also find these:
-- `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))
+Clearly, such expressions can become impractically long, so it's perhaps preferable to put it in a file. For example:
+```nix
+# ./my-comfyui.nix
+with (builtins.getFlake "github:nixified-ai/flake");
+let
+  vendor = "nvidia";
+  pkgs = legacyPackages.x86_64-linux.comfyui."${vendor}" // { comfyui = packages.x86_64-linux."comfyui-${vendor}"; };
+in
+  pkgs.comfyui.override {
+    models = pkgs.mergeModelSets [ pkgs.kritaModels.full (import ./my-models.nix) ];
+    customNodes = pkgs.kritaCustomNodes // (import ./my-custom-nodes.nix);
+    basePath = "/path/to/my-comfyui-base";
+    outputPath = "/tmp/comfyui-output";
+  }
+```
+and run it with `nix run --impure -f ./my-comfyui.nix`
+
+The available config options (and their defaults) are:
+- `basePath` (default: `"/var/lib/comfyui"`)
+- `inputPath` (default: `"${basePath}/input"`)
+- `outputPath` (default: `"${basePath}/output"`)
+- `tempPath` (default: `"${basePath}/temp"`)
+- `userPath` (default: `"${basePath}/user"`)
+
+(they are defined in [./projects/comfyui/package.nix](./projects/comfyui/package.nix).)
+
+Personal model sets and custom nodes can be defined in the same way as [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix (set hash to `""` and attempt to build to get the correct one).
+
+Here is what is included in `legacyPackages.x86_64-linux.comfyui.${vendor}`:
 - `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
 - `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
-- `kritaModels.required` - models expected by the plugin
-- `kritaModels.optional` - models needed for all optional features of the plugin
-
-Personal model sets and custom nodes can be easily defined the same way it is done in [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix. Set hash to `""` and attempt to build to get the correct one. Use `mergeModels` to merge model sets and the `//` operator to merge custom nodes.
-
-The options of `withConfig` (and their defaults) can be seen in [./projects/comfyui/package.nix](./projects/comfyui/package.nix):
-```nix
-{
-  ...,
-  basePath ? "/var/lib/comfyui",
-  inputPath ? "${basePath}/input",
-  outputPath ? "${basePath}/output",
-  tempPath ? "${basePath}/temp",
-  userPath ? "${basePath}/user",
-}: ...
-```
+- `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))
+- `kritaModels` - the subset of `models` relevant to the Krita plugin (see [./projects/comfyui/models/krita-ai-plugin.nix](./projects/comfyui/models/krita-ai-plugin.nix))
+  - `kritaModels.minimal` - models expected by the plugin
+  - `kritaModels.full` - minimal plus models needed for all optional features of the plugin
+- `mergeModelSets` - helper to easily merge a list of model sets (see above for usage example)
 
 ## [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
 

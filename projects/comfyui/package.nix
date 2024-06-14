@@ -14,7 +14,7 @@
   tempPath ? "${basePath}/temp",
   userPath ? "${basePath}/user",
 }: let
-  mergeModels = import ./models/merge-sets.nix;
+  mergeModelSets = import ./models/merge-sets.nix;
 
   # aggregate all custom nodes' dependencies
   dependencies = with builtins;
@@ -27,7 +27,7 @@
           models,
         }: x: {
           pkgs = pkgs ++ (x.pkgs or []);
-          models = mergeModels [models (x.models or {})];
+          models = mergeModelSets [models (x.models or {})];
         })
         {
           pkgs = [];
@@ -65,7 +65,7 @@
       "${type}/${name}" = fetched;
     });
   in
-    linkFarm "comfyui-models" (toNamePath (mergeModels [models dependencies.models]));
+    linkFarm "comfyui-models" (toNamePath (mergeModelSets [models dependencies.models]));
 
   config-data = {
     comfyui = let
