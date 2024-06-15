@@ -34,14 +34,23 @@
     name,
     url,
     hash,
+    # extract from subdir (defaults to root dir)
+    subdir ? "",
+    # files to extract (defaults to all)
+    files ? (
+      if subdir != ""
+      then ["${subdir}/*"]
+      else []
+    ),
   }:
     stdenv.mkDerivation {
       inherit name;
       buildInputs = [unzip];
       phases = ["installPhase"];
       installPhase = ''
-        mkdir -p $out
-        unzip $src -d $out/
+        unzip $src ${builtins.concatStringsSep " " files} -d ./
+        mkdir $out
+        mv ./${subdir}/* $out/
       '';
       src = import <nix/fetchurl.nix> {
         inherit name url hash;
@@ -162,12 +171,10 @@ in {
           url = "https://huggingface.co/InstantX/InstantID/resolve/main/ip-adapter.bin?download=true";
           hash = "sha256-ArNhjjbYA3hBZmYFIAmAiagTiOYak++AAqp5pbHFRuE=";
         };
-        # the archive has another antelopev2 subdir; otherwise this would have been
-        # "insightface/models".antelopev2 = fetchUnzip {
-        # and the 'name' would be 'antelopev2'
-        "insightface".antelopev2 = fetchUnzip {
-          name = "models";
+        "insightface/models".antelopev2 = fetchUnzip {
+          name = "antelopev2";
           url = "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip?download=true";
+          subdir = "antelopev2"; # files are in this subdir
           hash = "sha256-jhgvFPxugLO/o3WzPrbP9+4F2O92M+c40ciQIdzwxcU=";
         };
       };
