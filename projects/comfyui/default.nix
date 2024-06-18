@@ -57,27 +57,28 @@ in {
     mkComfyUIVariant = python3: args:
       pkgs.callPackage ./package.nix ({inherit python3;} // args);
 
+    # subset of `models` used by Krita plugin
+    kritaModels = import ./models/krita-ai-plugin.nix models;
     # everything here needs to be parametrised over gpu vendor
-    legacyPkgs = vendor: let
+    legacyPkgs = vendor: rec {
       customNodes = import ./custom-nodes {
         inherit models;
         inherit fetchFromHuggingFace;
         inherit (pkgs) stdenv fetchFromGitHub fetchzip;
         python3Packages = python3Variants."${vendor}";
       };
-    in {
-      inherit fetchFromHuggingFace;
-      inherit (import ./models/meta.nix) base-models model-types;
-      inherit customNodes models;
-      # subset of `models` used by Krita plugin
-      kritaModels = import ./models/krita-ai-plugin.nix models;
       # subset of `customNodes` used by Krita plugin
       kritaCustomNodes = import ./custom-nodes/krita-ai-plugin.nix customNodes;
     };
     amd = legacyPkgs "amd";
     nvidia = legacyPkgs "nvidia";
   in {
-    legacyPackages.comfyui = {inherit amd nvidia;};
+    legacyPackages.comfyui = {
+      inherit amd nvidia;
+      inherit fetchFromHuggingFace;
+      inherit (import ./models/meta.nix) base-models model-types;
+      inherit models;
+    };
 
     packages = rec {
       comfyui-amd = mkComfyUIVariant python3Variants.amd.python {

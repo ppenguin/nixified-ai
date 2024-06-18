@@ -24,7 +24,7 @@
         comfyui = inputs'.nixified-ai.packages."comfyui-${vendor}";
 
         myModels = {
-          good-model = with inputs'.nixified-ai.legacyPackages; {
+          good-model = with inputs'.nixified-ai.legacyPackages.comfyui; {
             installPath = "checkpoints/good-model.safetensors";
             src = pkgs.writeText "fake-good-model.safetensors" "";
             # src = fetchFromHuggingFace {
