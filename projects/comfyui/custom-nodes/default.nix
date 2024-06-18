@@ -31,6 +31,30 @@
       }
       // args);
 in {
+  # https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
+  frame-interpolation = mkComfyUICustomNodes {
+    pname = "comfyui-frame-interpolation";
+    version = "unstable-2024-05-07";
+    src = fetchFromGitHub {
+      owner = "Fannovel16";
+      repo = "ComfyUI-Frame-Interpolation";
+      rev = "1c4c4b4f9a99e7e6eb7c5a5f3fdc7c9dfd319357";
+      sha256 = "sha256-Qsx2GE7nDf4VDjS9KCzeUmJE5AR9IGm9i2DM5qmXswM=";
+    };
+    passthru.dependencies.pkgs = with python3Packages; [
+      cupy
+      einops
+      kornia
+      numpy
+      opencv4
+      pillow
+      scipy
+      torch
+      torchvision
+      tqdm
+    ];
+  };
+
   # https://github.com/Fannovel16/comfyui_controlnet_aux
   # Nodes for providing ControlNet hint images.
   controlnet-aux = mkComfyUICustomNodes {
