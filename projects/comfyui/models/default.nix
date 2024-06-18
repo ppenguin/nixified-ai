@@ -10,8 +10,8 @@ in {
       resource = "fav/realisticVisionV51_v51VAE.safetensors";
       sha256 = "sha256-FQEsU49QPOLr/CyFR7Jox1zNr/eigdtVOZlA/x1w4h0=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sd15;
+    type = checkpoint;
+    base = sd15;
   };
 
   DreamShaper_8_pruned = {
@@ -22,8 +22,8 @@ in {
       resource = "DreamShaper_8_pruned.safetensors";
       sha256 = "sha256-h521I8MNO5AXFD1WcFAV4VostWKHYsEdCG/tlTir1/0=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sdxl;
+    type = checkpoint;
+    base = sdxl;
   };
 
   juggernautXL_version6Rundiffusion = {
@@ -34,8 +34,8 @@ in {
       resource = "fav/juggernautXL_version6Rundiffusion.safetensors";
       sha256 = "sha256-H+bH7FTHhgQM2rx7TolyAGnZcJaSLiDQHxPndkQStH8=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sdxl;
+    type = checkpoint;
+    base = sdxl;
   };
 
   # A high quality checkpoint but beware it also does nsfw very
@@ -60,8 +60,8 @@ in {
       url = "https://civitai.com/api/download/models/355884";
       sha256 = "sha256-ZymMt9jS1Z698wujJGxEMQZeyt0E97qaOtLfDdWjhuc=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sdxl;
+    type = checkpoint;
+    base = sdxl;
   };
 
   # https://civitai.com/models/112902/dreamshaper-xl
@@ -76,8 +76,8 @@ in {
       url = "https://civitai.com/api/download/models/351306";
       sha256 = "sha256-RJazbUi/18/k5dvONIXbVnvO+ivvcjjSkNvUVhISUIM=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sdxl;
+    type = checkpoint;
+    base = sdxl;
   };
 
   # Pony generates some really high quality images - they tend to be more
@@ -92,8 +92,8 @@ in {
       url = "https://civitai.com/api/download/models/290640?type=Model&format=SafeTensor&size=pruned&fp=fp16";
       sha256 = "1cxh5450k3y9mkrf9dby7hbaydj3ymjwq5fvzsrqk6j3xkc2zav7";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = sdxl;
+    type = checkpoint;
+    base = sdxl;
   };
 
   # Allow for video from images.  See
@@ -107,8 +107,8 @@ in {
       resource = "svd.safetensors";
       sha256 = "sha256-PgmUYm3zlaODHeAk8RstnSQRQ7tvFuLvusztJIqhjOA=";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = svd;
+    type = checkpoint;
+    base = svd;
   };
   stable-video-diffusion-img2vid-xt = {
     installPath = "checkpoints/stable-video-diffusion-img2vid-xt.safetensors";
@@ -118,8 +118,8 @@ in {
       resource = "svd_xt.safetensors";
       sha256 = "b2652c23d64a1da5f14d55011b9b6dce55f2e72e395719f1cd1f8a079b00a451";
     };
-    meta.model-type = checkpoint;
-    meta.base-model = svdxt;
+    type = checkpoint;
+    base = svdxt;
   };
 
   MAT_Places512_G_fp16 = {
@@ -130,7 +130,7 @@ in {
       resource = "MAT_Places512_G_fp16.safetensors";
       sha256 = "sha256-MJ3Wzm4EA03EtrFce9KkhE0VjgPrKhOeDsprNm5AwN4=";
     };
-    meta.model-type = inpaint;
+    type = inpaint;
   };
 
   fooocus_inpaint_head = {
@@ -141,7 +141,7 @@ in {
       resource = "fooocus_inpaint_head.pth";
       sha256 = "sha256-Mvf4OODG2PE0N7qEEed6RojXei4034hX5O9NUfa5dpI=";
     };
-    meta.model-type = inpaint;
+    type = inpaint;
   };
 
   inpaint_v26-fooocus = {
@@ -152,7 +152,7 @@ in {
       resource = "inpaint_v26.fooocus.patch";
       sha256 = "sha256-+GV6AlEE4i1w+cBgY12OjCGW9DOHGi9o3ECr0hcfDVk=";
     };
-    meta.model-type = inpaint;
+    type = inpaint;
   };
 
   CLIP-ViT-H-14-laion2B-s32B-b79K = {
@@ -163,7 +163,7 @@ in {
       resource = "models/image_encoder/model.safetensors";
       sha256 = "sha256-bKlmfaHKngsPdeRrsDD34BH0T4bL+41aNlkPzXUHsDA=";
     };
-    meta.model-type = clip_vision;
+    type = clip_vision;
   };
 
   CLIP-ViT-bigG-14-laion2B-39B-b160k = {
@@ -174,8 +174,8 @@ in {
       resource = "sdxl_models/image_encoder/model.safetensors";
       sha256 = "sha256-ZXcj4J9Gp8OVffZRYBAp9msXSK+xK0GYFjMPFu1F1k0=";
     };
-    meta.model-type = clip_vision;
-    meta.base-model = sdxl;
+    type = clip_vision;
+    base = sdxl;
   };
 
   clip_vision-sd15 = {
@@ -186,8 +186,8 @@ in {
       resource = "models/image_encoder/model.safetensors";
       sha256 = "sha256-bKlmfaHKngsPdeRrsDD34BH0T4bL+41aNlkPzXUHsDA=";
     };
-    meta.model-type = clip_vision;
-    meta.base-model = sd15;
+    type = clip_vision;
+    base = sd15;
   };
 
   # https://huggingface.co/lllyasviel/ControlNet-v1-1
@@ -201,8 +201,8 @@ in {
       resource = "control_v11f1e_sd15_tile.yaml";
       sha256 = "sha256-OeEzjEFDYYrbF2BPlsOj90DBq10VV9cbBE8DB6CmrbQ=";
     };
-    meta.model-type = config;
-    meta.base-model = sd15;
+    type = config;
+    base = sd15;
   };
 
   # https://huggingface.co/lllyasviel/ControlNet-v1-1
@@ -215,8 +215,8 @@ in {
       resource = "control_v11f1e_sd15_tile.pth";
       sha256 = "sha256-iqabjTkecsL87WplAmgTfcDtWUyv6KLA+LmUeZohl5s=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_v11p_sd15_inpaint_fp16 = {
@@ -227,8 +227,8 @@ in {
       resource = "control_v11p_sd15_inpaint_fp16.safetensors";
       sha256 = "sha256-Z3pP41Ht7NQM0NfMIQqGhrWdTlUgcxfxIxnvdGp6Wok=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11f1e_sd15_tile_fp16 = {
@@ -239,8 +239,8 @@ in {
       resource = "control_lora_rank128_v11f1e_sd15_tile_fp16.safetensors";
       sha256 = "sha256-zsADaemc/tHOyX4RJM8yIN96meRTVOqh4zUMSF5lFU8=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_scribble = {
@@ -251,8 +251,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_scribble_fp16.safetensors";
       sha256 = "sha256-8fAojNbUkNmXap9MNigvPUfLjgLcaAWqRLONRAT+AIo=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_lineart = {
@@ -263,8 +263,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_lineart_fp16.safetensors";
       sha256 = "sha256-nTqRttVaMSNIPesJ9xzFWKC9VOXsQUL1GHmE29LgmdE=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_softedge = {
@@ -275,8 +275,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_softedge_fp16.safetensors";
       sha256 = "sha256-AQiSrKkewwKOtms0troweabbVNqF7UsI8XLg0Gr5sX0=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_canny = {
@@ -287,8 +287,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_canny_fp16.safetensors";
       sha256 = "sha256-RQU9NBrDbYVZrTAUOPwIsyBCHngqXsiIirivFrd2PGs=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11f1p_sd15_depth = {
@@ -299,8 +299,8 @@ in {
       resource = "control_lora_rank128_v11f1p_sd15_depth_fp16.safetensors";
       sha256 = "sha256-egSAgFlH83eYWowmhLjlLN0mX8sltmBOqUCazgjbPTQ=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_normalbae = {
@@ -311,8 +311,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_normalbae_fp16.safetensors";
       sha256 = "sha256-yoQBCo6DLT0uZxx2ZP80X2RfPvfoNZy8o+KzbYa8/zA=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control-lora-openposexl2-rank = {
@@ -323,8 +323,8 @@ in {
       resource = "control-lora-openposeXL2-rank256.safetensors";
       sha256 = "sha256-ivoHkoW/k4Tq+PYyKITLTyS75AXaSQ+R9VQNO/9YXnU=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   control_lora_rank128_v11p_sd15_openpose = {
@@ -335,8 +335,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_openpose_fp16.safetensors";
       sha256 = "sha256-bI7d4knmuW9smwUWokPXXritw4Yk7+FxqcirX7Gmlgg=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_lora_rank128_v11p_sd15_seg = {
@@ -347,8 +347,8 @@ in {
       resource = "control_lora_rank128_v11p_sd15_seg_fp16.safetensors";
       sha256 = "sha256-EZN5QVl6ZxUO8PdKow8IKxY0QxCA3uYJ0CMamlm3+k8=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_v1p_sd15_qrcode_monster = {
@@ -359,8 +359,8 @@ in {
       resource = "control_v1p_sd15_qrcode_monster.safetensors";
       sha256 = "sha256-x/Q/cOJmFT0S9eG7HJ574/RRPPDu8EMmYbEzG/4Ryt8=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control_sd15_inpaint_depth_hand = {
@@ -371,8 +371,8 @@ in {
       resource = "control_sd15_inpaint_depth_hand_fp16.safetensors";
       sha256 = "sha256-lEt0uO03ARF//lVQAmu/8shhbxySsbsv7gDlNJ/0YlY=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sd15;
+    type = controlnet;
+    base = sd15;
   };
 
   control-lora-sketch-rank = {
@@ -383,8 +383,8 @@ in {
       resource = "control-LoRAs-rank128/control-lora-sketch-rank128-metadata.safetensors";
       sha256 = "sha256-Z5xhaAeuxzxHu3KBokp23f5S+ltdaFMvVCq4EzR7Lq4=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   control-lora-recolor-rank = {
@@ -395,8 +395,8 @@ in {
       resource = "control-LoRAs-rank128/control-lora-recolor-rank128.safetensors";
       sha256 = "sha256-1sAdWIVQ1Bq0f/JTSuE1RB7Y5hS3KzFnh+i3kWzgjmE=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   control-lora-canny-rank = {
@@ -407,8 +407,8 @@ in {
       resource = "control-LoRAs-rank128/control-lora-canny-rank128.safetensors";
       sha256 = "sha256-VjiduyRcpE3pHWYlKb1CmKvFXOIxj2C8GUVPty/2gkc=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   control-lora-depth-rank = {
@@ -419,8 +419,8 @@ in {
       resource = "control-LoRAs-rank128/control-lora-depth-rank128.safetensors";
       sha256 = "sha256-N+ORdX5sAEL6o3lRdKy+EaMZkiUgWM+4u6zPEQc1Z7Q=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   # https://huggingface.co/TTPlanet/TTPLanet_SDXL_Controlnet_Tile_Realistic_V1
@@ -432,8 +432,8 @@ in {
       resource = "TTPLANET_Controlnet_Tile_realistic_v1_fp16.safetensors";
       sha256 = "sha256-+ipfL+yBSBnINUA8d4viwkN9FHkxkhMEVp/M7CtFFzw=";
     };
-    meta.model-type = controlnet;
-    meta.base-model = sdxl;
+    type = controlnet;
+    base = sdxl;
   };
 
   # Basic model, average strength
@@ -445,8 +445,8 @@ in {
       resource = "models/ip-adapter_sd15.safetensors";
       sha256 = "sha256-KJtF8W0EPQv1QuRYMflx3Nqr4YtlbxHobZ37p+nuM2k=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # SDXL model
@@ -458,8 +458,8 @@ in {
       resource = "sdxl_models/ip-adapter_sdxl_vit-h.safetensors";
       sha256 = "sha256-6/BdkYNIrsersCpens73fgquppFKXE6hP1DUXrFoGDE=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # Light impact model
@@ -471,8 +471,8 @@ in {
       resource = "models/ip-adapter_sd15_light_v11.bin";
       sha256 = "sha256-NQtjpXhHwWPi6YSwEJD4X/5g6q4g8ysrLJ4czH3dlys=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # Plus model, very strong
@@ -484,8 +484,8 @@ in {
       resource = "models/ip-adapter-plus_sd15.safetensors";
       sha256 = "sha256-ocJQvkBFXMYaQ9oSAew/HtrqcSFIZftH9Xkn4Gy+SZY=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # Face model, portraits
@@ -497,8 +497,8 @@ in {
       resource = "models/ip-adapter-plus-face_sd15.safetensors";
       sha256 = "sha256-HJ7cIa9vc33B1uDnNBkOl2z6z4AtawJLd6o76SL3Vps=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # Stronger face model, not necessarily better
@@ -510,8 +510,8 @@ in {
       resource = "models/ip-adapter-full-face_sd15.safetensors";
       sha256 = "sha256-9KF/tkO/h2I1pFoOh6SdooVb5lhLKMoExiqXq1/xxvM=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # Base model, requires bigG clip vision encoder
@@ -523,8 +523,8 @@ in {
       resource = "models/ip-adapter_sd15_vit-G.safetensors";
       sha256 = "sha256-om9zavB7s0GoPf6iNxNTHQV1dg6O2UfGjLMaTGLZyQs=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # SDXL plus model
@@ -536,8 +536,8 @@ in {
       resource = "sdxl_models/ip-adapter-plus_sdxl_vit-h.safetensors";
       sha256 = "sha256-P1BiuEAMlLcVlmWyG6XGKs3NdoImJ0PX8q7+3vAOZYE=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # SDXL face model
@@ -549,8 +549,8 @@ in {
       resource = "sdxl_models/ip-adapter-plus-face_sdxl_vit-h.safetensors";
       sha256 = "sha256-Z3rYhgIE99C/uhLSnmwx3tm+798+S70QJRg1fTGiksE=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # vit-G SDXL model, requires bigG clip vision encoder
@@ -562,8 +562,8 @@ in {
       resource = "sdxl_models/ip-adapter_sdxl.safetensors";
       sha256 = "sha256-uhACUp54NgTF8ybUnwEiAlOS0dIKyNVzs+6z5t6k67Y=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   ## FaceID models (these require the insightface python package, and most require specific loras)
@@ -577,8 +577,8 @@ in {
       resource = "ip-adapter-faceid_sd15.bin";
       sha256 = "sha256-IBNE4i5vVYSc8HynpuU9jDsAEyfGbLlxDWn9XaSKjac=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # FaceID plus v2
@@ -590,8 +590,8 @@ in {
       resource = "ip-adapter-faceid-plusv2_sd15.bin";
       sha256 = "sha256-JtDYah1g1syBHTuIYheLRh4e62Ueb+K3K6F6qVQR4xM=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # text prompt style transfer for portraits
@@ -603,8 +603,8 @@ in {
       resource = "ip-adapter-faceid-portrait-v11_sd15.bin";
       sha256 = "sha256-pIy0+J7RjgLGAA9lqp7+xFLofq7Uobyfz0pGDI0OO8Y=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sd15;
+    type = ipadapter;
+    base = sd15;
   };
 
   # SDXL base FaceID
@@ -616,8 +616,8 @@ in {
       resource = "ip-adapter-faceid_sdxl.bin";
       sha256 = "sha256-9FX+0k4gfIeOweBGazSpadN7q4V8X6pOjSWaC0/2PX4=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # SDXL plus v2
@@ -629,8 +629,8 @@ in {
       resource = "ip-adapter-faceid-plusv2_sdxl.bin";
       sha256 = "sha256-xpRdgrVDcAzDzLuY02O4N+nFligWB4V8dLcTqHba9fs=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # SDXL text prompt style transfer
@@ -642,8 +642,8 @@ in {
       resource = "ip-adapter-faceid-portrait_sdxl.bin";
       sha256 = "sha256-VjHOeCTNr9LbN8XoW5hXMKlf9ZxbT8gMK3mwvuVxFRI=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
 
   # very strong style transfer SDXL only
@@ -655,8 +655,8 @@ in {
       resource = "ip-adapter-faceid-portrait_sdxl_unnorm.bin";
       sha256 = "sha256-Igu4biBTk6PQQRYxy0c8rdvzX9NxvikFypAIgYFw21U=";
     };
-    meta.model-type = ipadapter;
-    meta.base-model = sdxl;
+    type = ipadapter;
+    base = sdxl;
   };
   lcm-lora-sdv1-5 = {
     installPath = "loras/lcm-lora-sdv1-5.safetensors";
@@ -666,8 +666,8 @@ in {
       resource = "pytorch_lora_weights.safetensors";
       sha256 = "sha256-j5DYQOB1/1iKWOIsZYbirppveSKZbuZkmn8BByMzr+Q=";
     };
-    meta.model-type = lora;
-    meta.base-model = sd15;
+    type = lora;
+    base = sd15;
   };
 
   lcm-lora-sdxl = {
@@ -678,8 +678,8 @@ in {
       resource = "pytorch_lora_weights.safetensors";
       sha256 = "sha256-p2TmhZtuBAR812HAj/DO6WQTqOAEyfB3B1MM13axkUE=";
     };
-    meta.model-type = lora;
-    meta.base-model = sdxl;
+    type = lora;
+    base = sdxl;
   };
 
   # Helps with eyes.
@@ -690,8 +690,8 @@ in {
       url = "https://civitai.com/api/download/models/128461?type=Model&format=SafeTensor";
       sha256 = "sha256-8kg2TPCsx6ALxLUUW0TA378Q5x6bDvtrd/CVauryQRw=";
     };
-    meta.model-type = lora;
-    meta.base-model = sdxl;
+    type = lora;
+    base = sdxl;
   };
 
   # Helps with indicating various styles in PonyXL, such as oil,
@@ -703,8 +703,8 @@ in {
       url = "https://civitai.com/api/download/models/398292?type=Model&format=SafeTensor";
       sha256 = "01m4zq2i1hyzvx95nq2v3n18b2m98iz0ryizdkyc1y42f1rwd0kx";
     };
-    meta.model-type = lora;
-    meta.base-model = sdxl;
+    type = lora;
+    base = sdxl;
   };
 
   # TODO: Maybe figure out how to obfuscate?
@@ -714,7 +714,7 @@ in {
       url = "https://civitai.com/api/download/models/244808?type=Model&format=SafeTensor.SafeTensor";
       sha256 = "sha256-gKpnkTrryJoBvhkH5iEi8zn9/ucMFxq3upZ8Xl/PJ+o=";
     };
-    meta.model-type = lora;
+    type = lora;
   };
 
   ip-adapter-faceid_sd15_lora = {
@@ -725,8 +725,8 @@ in {
       resource = "ip-adapter-faceid_sd15_lora.safetensors";
       sha256 = "sha256-cGmfDb+t1H3h+B0mPPTIa9S3Jx2EEwSvmzQLOn846Go=";
     };
-    meta.model-type = lora;
-    meta.base-model = sd15;
+    type = lora;
+    base = sd15;
   };
 
   ip-adapter-faceid-plusv2_sd15_lora = {
@@ -737,8 +737,8 @@ in {
       resource = "ip-adapter-faceid-plusv2_sd15_lora.safetensors";
       sha256 = "sha256-ir/4ehWgSfPgGGwugsHI53eDuvLPtj80xBJlYFLrV7A=";
     };
-    meta.model-type = lora;
-    meta.base-model = sd15;
+    type = lora;
+    base = sd15;
   };
 
   # SDXL FaceID LoRA
@@ -750,8 +750,8 @@ in {
       resource = "ip-adapter-faceid_sdxl_lora.safetensors";
       sha256 = "sha256-T8+T1ujcjdGPX55RyDBvNpSG7QqgeAremWEwiv9/DWQ=";
     };
-    meta.model-type = lora;
-    meta.base-model = sdxl;
+    type = lora;
+    base = sdxl;
   };
 
   # SDXL plus v2 LoRA
@@ -763,8 +763,8 @@ in {
       resource = "ip-adapter-faceid-plusv2_sdxl_lora.safetensors";
       sha256 = "sha256-8ktLstrWY4oJwA8VHN6EmRuvN0QJOFvLq1PBhxowy3s=";
     };
-    meta.model-type = lora;
-    meta.base-model = sdxl;
+    type = lora;
+    base = sdxl;
   };
 
   # https://civitai.com/models/199663/indigenous-mix-by-noerman
@@ -774,8 +774,8 @@ in {
       url = "https://civitai.com/api/download/models/227236?type=Model&format=SafeTensor";
       sha256 = "sha256-9OmsnpnknlfMhnWNwRD+RlYOAyYChF7+OgGCU6GGafY=";
     };
-    meta.model-type = lora;
-    meta.base-model = sd15;
+    type = lora;
+    base = sd15;
   };
 
   # https://civitai.com/models/201636/south-america-indigenous-mix-by-noerman
@@ -785,8 +785,8 @@ in {
       url = "https://civitai.com/api/download/models/226955?type=Model&format=SafeTensor";
       sha256 = "sha256-HMmTe9ALD+b35BB80lYfM2UMlJsrlYbIVKCLLJ3sJzc=";
     };
-    meta.model-type = lora;
-    meta.base-model = sd15;
+    type = lora;
+    base = sd15;
   };
 
   # Upscaler comparisons can be found here:
@@ -799,7 +799,7 @@ in {
       resource = "4x_NMKD-Superscale-SP_178000_G.pth";
       sha256 = "sha256-HRsAeP5xRG4EadjU31npa6qA2DzaYA1oI31lWDCCG8w=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   OmniSR_X2_DIV2K = {
@@ -810,7 +810,7 @@ in {
       resource = "OmniSR_X2_DIV2K.safetensors";
       sha256 = "sha256-eUCPwjIDvxYfqpV8SmAsxAUh7SI1py2Xa9nTdeZkRhE=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   OmniSR_X3_DIV2K = {
@@ -821,7 +821,7 @@ in {
       resource = "OmniSR_X3_DIV2K.safetensors";
       sha256 = "sha256-T7C2j8MU95jS3c8fPSJTBFuj2VnYua4nDFqZufhi7hI=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   OmniSR_X4_DIV2K = {
@@ -832,7 +832,7 @@ in {
       resource = "OmniSR_X4_DIV2K.safetensors";
       sha256 = "sha256-3/JeTtOSy1y+U02SDikgY6BVXfkoHFTF7DIUkKKlmDI=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   # https://openmodeldb.info/models/4x-realesrgan-x4plus
@@ -843,7 +843,7 @@ in {
       url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth";
       sha256 = "sha256-T6DTiQX3WsButJp5UbQmZwAhvjAYJl/RkdISXfnWgvE=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   # Doesn't work at all - unsupported model.  Must be older SD version
@@ -856,7 +856,7 @@ in {
       resource = "x4-upscaler-ema.safetensors";
       sha256 = "35c01d6160bdfe6644b0aee52ac2667da2f40a33a5d1ef12bbd011d059057bc6";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   # Samael1976 reposted this to civitai.com - the alternative is to
@@ -871,7 +871,7 @@ in {
       resource = "4x-UltraSharp.pth";
       sha256 = "sha256-pYEiMfyTa0KvCKXtunhBlUldMD1bMkjCRInvDEAh/gE=";
     };
-    meta.model-type = upscaler;
+    type = upscaler;
   };
 
   sdxl_vae = {
@@ -880,8 +880,8 @@ in {
       url = "https://civitai.com/api/download/models/290640?type=VAE";
       sha256 = "1qf65fia7g0ammwjw2vw1yhijw5kd2c54ksv3d64mgw6inplamr3";
     };
-    meta.model-type = vae;
-    meta.base-model = sdxl;
+    type = vae;
+    base = sdxl;
   };
 
   inswapper_128 = {

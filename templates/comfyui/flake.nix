@@ -34,10 +34,8 @@
             #   # leave as `""` and build once to get actual hash
             #   sha256 = "";
             # };
-            meta = {
-              model-type = model-types.checkpoint;
-              base-model = base-models.sd3-medium;
-            };
+            type = model-types.checkpoint;
+            base = base-models.sd3-medium;
           };
         };
       in {

@@ -57,10 +57,11 @@ with builtins; let
     mkComfyUIModel = name: {
       src,
       installPath,
-      meta ? {},
+      type ? null,
+      base ? null,
     }:
       stdenv.mkDerivation {
-        inherit src meta;
+        inherit src;
         name = src.name;
         phases = ["buildPhase"];
         buildPhase = ''
@@ -68,6 +69,10 @@ with builtins; let
           mkdir -p $out/$dir
           ln -s $src $out/${installPath}
         '';
+        meta = {
+          model-type = type;
+          base-model = base;
+        };
       };
   in
     # WARN: this *replaces* existing paths when symlinking
