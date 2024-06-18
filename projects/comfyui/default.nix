@@ -77,7 +77,7 @@ in {
       inherit amd nvidia;
       inherit fetchFromHuggingFace;
       inherit (import ./models/meta.nix) base-models model-types;
-      inherit models;
+      inherit models kritaModels;
     };
 
     packages = rec {
