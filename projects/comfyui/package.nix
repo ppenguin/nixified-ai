@@ -20,7 +20,13 @@ with builtins; let
   expectType = ty: name: x:
     if ty.check x
     then x
-    else throw "${name} (of type ${x._type or (builtins.typeOf x)}) was expected to be of type ${ty.description}";
+    else let
+      xtra =
+        if lib.isAttrs x
+        then "\ninstead it has attributes {${lib.concatStringsSep ", " (attrNames x)}}"
+        else "";
+    in
+      throw "${name} (of type ${x._type or (builtins.typeOf x)}) was expected to be of type ${ty.description}${xtra}";
 
   expectModel = expectType (lib.mkOptionType {
     name = "comfyui-model";
