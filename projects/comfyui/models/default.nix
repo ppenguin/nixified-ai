@@ -57,6 +57,7 @@ in {
   colossus-xl-v6 = {
     installPath = "checkpoints/colossus-xl-v6.safetensors";
     src = fetchFromUrl {
+      name = "colossus-xl-v6";
       url = "https://civitai.com/api/download/models/355884";
       sha256 = "sha256-ZymMt9jS1Z698wujJGxEMQZeyt0E97qaOtLfDdWjhuc=";
     };
@@ -73,6 +74,7 @@ in {
   dreamshaper-xl-fp16 = {
     installPath = "checkpoints/dreamshaper-xl-fp16.safetensors";
     src = fetchFromUrl {
+      name = "dreamshaper-xl-fp16";
       url = "https://civitai.com/api/download/models/351306";
       sha256 = "sha256-RJazbUi/18/k5dvONIXbVnvO+ivvcjjSkNvUVhISUIM=";
     };
@@ -89,6 +91,7 @@ in {
   pony-xl-v6 = {
     installPath = "checkpoints/pony-xl-v6.safetensors";
     src = fetchFromUrl {
+      name = "pony-xl-v6";
       url = "https://civitai.com/api/download/models/290640?type=Model&format=SafeTensor&size=pruned&fp=fp16";
       sha256 = "1cxh5450k3y9mkrf9dby7hbaydj3ymjwq5fvzsrqk6j3xkc2zav7";
     };
@@ -687,6 +690,7 @@ in {
   perfect-eyes-xl = {
     installPath = "loras/perfect-eyes-xl.safetensors";
     src = fetchFromUrl {
+      name = "perfect-eyes-xl";
       url = "https://civitai.com/api/download/models/128461?type=Model&format=SafeTensor";
       sha256 = "sha256-8kg2TPCsx6ALxLUUW0TA378Q5x6bDvtrd/CVauryQRw=";
     };
@@ -700,6 +704,7 @@ in {
   ponyx-xl-v6-non-artist-styles = {
     installPath = "loras/ponyx-xl-v6-non-artist-styles.safetensors";
     src = fetchFromUrl {
+      name = "ponyx-xl-v6-non-artist-styles";
       url = "https://civitai.com/api/download/models/398292?type=Model&format=SafeTensor";
       sha256 = "01m4zq2i1hyzvx95nq2v3n18b2m98iz0ryizdkyc1y42f1rwd0kx";
     };
@@ -711,6 +716,7 @@ in {
   ralph-breaks-internet-disney-princesses = {
     installPath = "loras/ralph-breaks-internet-disney-princesses.safetensors";
     src = fetchFromUrl {
+      name = "ralph-breaks-internet-disney-princesses";
       url = "https://civitai.com/api/download/models/244808?type=Model&format=SafeTensor.SafeTensor";
       sha256 = "sha256-gKpnkTrryJoBvhkH5iEi8zn9/ucMFxq3upZ8Xl/PJ+o=";
     };
@@ -771,6 +777,7 @@ in {
   indigenous-mix-by-noerman = {
     installPath = "loras/indigenous-mix-by-noerman.safetensors";
     src = fetchFromUrl {
+      name = "indigenous-mix-by-noerman";
       url = "https://civitai.com/api/download/models/227236?type=Model&format=SafeTensor";
       sha256 = "sha256-9OmsnpnknlfMhnWNwRD+RlYOAyYChF7+OgGCU6GGafY=";
     };
@@ -782,6 +789,7 @@ in {
   south-america-indigenous-mix-by-noerman = {
     installPath = "loras/south-america-indigenous-mix-by-noerman.safetensors";
     src = fetchFromUrl {
+      name = "south-america-indigenous-mix-by-noerman";
       url = "https://civitai.com/api/download/models/226955?type=Model&format=SafeTensor";
       sha256 = "sha256-HMmTe9ALD+b35BB80lYfM2UMlJsrlYbIVKCLLJ3sJzc=";
     };
@@ -840,6 +848,7 @@ in {
   real-esrgan-4xplus = {
     installPath = "upscale_models/real-esrgan-4xplus.pth";
     src = fetchFromUrl {
+      name = "real-esrgan-4xplus";
       url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth";
       sha256 = "sha256-T6DTiQX3WsButJp5UbQmZwAhvjAYJl/RkdISXfnWgvE=";
     };
@@ -877,6 +886,7 @@ in {
   sdxl_vae = {
     installPath = "vae/sdxl_vae.safetensors";
     src = fetchFromUrl {
+      name = "sdxl_vae";
       url = "https://civitai.com/api/download/models/290640?type=VAE";
       sha256 = "1qf65fia7g0ammwjw2vw1yhijw5kd2c54ksv3d64mgw6inplamr3";
     };
