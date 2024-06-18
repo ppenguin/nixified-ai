@@ -55,13 +55,14 @@ Clearly, such expressions can become unwieldy, and for that reason there is a te
 
 See [./templates/comfyui/flake.nix](./templates/comfyui/flake.nix) to get an idea of how to specify models and nodes when overriding.
 
-Here is what is included in `legacyPackages.x86_64-linux.comfyui.${vendor}`:
-- `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
-- `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
-- `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix))
+Here is what is included in `legacyPackages.x86_64-linux.comfyui`:
+- `models` - the full model set included in this flake (see [./projects/comfyui/models/default.nix](./projects/comfyui/models/default.nix)). Note that they are not packages, but modules. To fetch a model without adding it to a setup, build its `.src`.
 - `kritaModels` - the subset of `models` relevant to the Krita plugin (see [./projects/comfyui/models/krita-ai-plugin.nix](./projects/comfyui/models/krita-ai-plugin.nix))
-  - `kritaModels.minimal` - models expected by the plugin
-  - `kritaModels.full` - minimal plus models needed for all optional features of the plugin
+  - `minimal` - models expected by the plugin
+  - `full` - minimal plus models needed for all optional features of the plugin
+- `"${vendor}"` (anything gpu-vendor-dependent)
+  - `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
+  - `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
 
 ## [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
 
