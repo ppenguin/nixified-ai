@@ -3,6 +3,7 @@
     sd15 = "sd15";
     sd3-medium = "sd3-medium";
     sdxl = "sdxl";
+    svd = "svd";
     svdxt = "svdxt";
   };
   model-types = {

@@ -99,6 +99,17 @@ in {
   # Allow for video from images.  See
   # https://comfyanonymous.github.io/ComfyUI_examples/video/ for the
   # official ComfyUI documentation.
+  stable-video-diffusion-img2vid = {
+    installPath = "checkpoints/stable-video-diffusion-img2vid.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "stabilityai";
+      repo = "stable-video-diffusion-img2vid";
+      resource = "svd.safetensors";
+      sha256 = "sha256-PgmUYm3zlaODHeAk8RstnSQRQ7tvFuLvusztJIqhjOA=";
+    };
+    meta.model-type = checkpoint;
+    meta.base-model = svd;
+  };
   stable-video-diffusion-img2vid-xt = {
     installPath = "checkpoints/stable-video-diffusion-img2vid-xt.safetensors";
     src = fetchFromHuggingFace {
