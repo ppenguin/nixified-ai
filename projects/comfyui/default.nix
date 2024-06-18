@@ -40,7 +40,18 @@ in {
         ]);
     };
 
-    models = import ./models;
+    fetchFromHuggingFace = {
+      owner,
+      repo,
+      sha256,
+      rev ? "main",
+      resource ? "", # the file to retrieve
+    }:
+      import <nix/fetchurl.nix> {
+        inherit sha256;
+        url = "https://huggingface.co/${owner}/${repo}/resolve/${rev}/${resource}";
+      };
+    models = import ./models {inherit fetchFromHuggingFace;};
 
     # we require a python3 with an appropriately overriden package set depending on GPU
     mkComfyUIVariant = python3: args:
@@ -50,13 +61,14 @@ in {
     legacyPkgs = vendor: let
       customNodes = import ./custom-nodes {
         inherit models;
-        inherit (pkgs) stdenv fetchFromGitHub unzip;
+        inherit fetchFromHuggingFace;
+        inherit (pkgs) stdenv fetchFromGitHub fetchzip;
         python3Packages = python3Variants."${vendor}";
       };
     in {
+      inherit fetchFromHuggingFace;
+      inherit (import ./models/meta.nix) base-models model-types;
       inherit customNodes models;
-      # takes a list of model sets and merges them
-      mergeModelSets = import ./models/merge-sets.nix;
       # subset of `models` used by Krita plugin
       kritaModels = import ./models/krita-ai-plugin.nix models;
       # subset of `customNodes` used by Krita plugin

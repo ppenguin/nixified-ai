@@ -2,7 +2,8 @@
   stdenv,
   python3Packages,
   fetchFromGitHub,
-  unzip,
+  fetchFromHuggingFace,
+  fetchzip,
   models,
 }: let
   # Patches don't apply to $src, and as with many scripting languages that don't
@@ -29,33 +30,6 @@
         };
       }
       // args);
-
-  fetchUnzip = {
-    name,
-    url,
-    hash,
-    # extract from subdir (defaults to root dir)
-    subdir ? "",
-    # files to extract (defaults to all)
-    files ? (
-      if subdir != ""
-      then ["${subdir}/*"]
-      else []
-    ),
-  }:
-    stdenv.mkDerivation {
-      inherit name;
-      buildInputs = [unzip];
-      phases = ["installPhase"];
-      installPhase = ''
-        unzip $src ${builtins.concatStringsSep " " files} -d ./
-        mkdir $out
-        mv ./${subdir}/* $out/
-      '';
-      src = import <nix/fetchurl.nix> {
-        inherit name url hash;
-      };
-    };
 in {
   # https://github.com/Fannovel16/comfyui_controlnet_aux
   # Nodes for providing ControlNet hint images.
@@ -124,7 +98,7 @@ in {
       owner = "Fannovel16";
       repo = "comfyui_controlnet_aux";
       rev = "c0b33402d9cfdc01c4e0984c26e5aadfae948e05";
-      hash = "sha256-D9nzyE+lr6EJ+9Egabu+th++g9ZR05wTg0KSRUBaAZE=";
+      sha256 = "sha256-D9nzyE+lr6EJ+9Egabu+th++g9ZR05wTg0KSRUBaAZE=";
       fetchSubmodules = true;
     };
   };
@@ -139,7 +113,7 @@ in {
       owner = "Acly";
       repo = "comfyui-inpaint-nodes";
       rev = "8b800e41bd86ce8f47ec077c839f8b11e52872b2";
-      hash = "sha256-7WepT234aSMCiaUqiDBH/Xgd8ZvpEc/V5dG3Nld1ysI=";
+      sha256 = "sha256-7WepT234aSMCiaUqiDBH/Xgd8ZvpEc/V5dG3Nld1ysI=";
       fetchSubmodules = true;
     };
   };
@@ -153,7 +127,7 @@ in {
       owner = "cubiq";
       repo = "ComfyUI_InstantID";
       rev = "d8c70a0cd8ce0d4d62e78653674320c9c3084ec1";
-      hash = "sha256-zLS2X4bW62Gqo48qB8kONJI1L0+tVKHLZV/fC2B5M9c=";
+      sha256 = "sha256-zLS2X4bW62Gqo48qB8kONJI1L0+tVKHLZV/fC2B5M9c=";
     };
     passthru.dependencies = {
       pkgs = with python3Packages; [
@@ -161,21 +135,30 @@ in {
         onnxruntime
       ];
       models = {
-        controlnet.instantid = import <nix/fetchurl.nix> {
-          name = "diffusion_pytorch_model.safetensors";
-          url = "https://huggingface.co/InstantX/InstantID/resolve/main/ControlNetModel/diffusion_pytorch_model.safetensors?download=true";
-          hash = "sha256-yBJ76fF0EB69r+6ZZNhWtJtjRDXPbao5bT9ZPPC7uwU=";
+        instantid = {
+          installPath = "controlnet/diffusion_pytorch_model.safetensors";
+          src = fetchFromHuggingFace {
+            owner = "InstantX";
+            repo = "InstantID";
+            resource = "ControlNetModel/diffusion_pytorch_model.safetensors";
+            sha256 = "sha256-yBJ76fF0EB69r+6ZZNhWtJtjRDXPbao5bT9ZPPC7uwU=";
+          };
         };
-        instantid.ipadapter = import <nix/fetchurl.nix> {
-          name = "ip-adapter.bin";
-          url = "https://huggingface.co/InstantX/InstantID/resolve/main/ip-adapter.bin?download=true";
-          hash = "sha256-ArNhjjbYA3hBZmYFIAmAiagTiOYak++AAqp5pbHFRuE=";
+        instantid-ipadapter = {
+          installPath = "instantid/ip-adapter.bin";
+          src = fetchFromHuggingFace {
+            owner = "InstantX";
+            repo = "InstantID";
+            resource = "ip-adapter.bin";
+            sha256 = "sha256-ArNhjjbYA3hBZmYFIAmAiagTiOYak++AAqp5pbHFRuE=";
+          };
         };
-        "insightface/models".antelopev2 = fetchUnzip {
-          name = "antelopev2";
-          url = "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip?download=true";
-          subdir = "antelopev2"; # files are in this subdir
-          hash = "sha256-jhgvFPxugLO/o3WzPrbP9+4F2O92M+c40ciQIdzwxcU=";
+        antelopev2 = {
+          installPath = "insightface/models/antelopev2";
+          src = fetchzip {
+            url = "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip";
+            sha256 = "sha256-pUEM9LcVmTUemvglPZxiIvJd18QSDjxTEwAjfIWZ93g=";
+          };
         };
       };
     };
@@ -193,7 +176,7 @@ in {
       owner = "cubiq";
       repo = "ComfyUI_IPAdapter_plus";
       rev = "417d806e7a2153c98613e86407c1941b2b348e88";
-      hash = "sha256-yuZWc2PsgMRCFSLTqniZDqZxevNt2/na7agKm7Xhy7Y=";
+      sha256 = "sha256-yuZWc2PsgMRCFSLTqniZDqZxevNt2/na7agKm7Xhy7Y=";
       fetchSubmodules = true;
     };
 
@@ -203,11 +186,14 @@ in {
         onnxruntime
       ];
       models = {
-        insightface = {inherit (models.insightface) inswapper_128;};
-        "insightface/models".buffalo_l = fetchUnzip {
-          name = "buffalo_l";
-          url = "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip";
-          hash = "sha256-gP/jfYpZQNWac4TCAaKjjUdB8vPFHu9G67KCGKewyi8=";
+        inherit (models) inswapper_128;
+        buffalo_l = {
+          installPath = "insightface/models/buffalo_l";
+          src = fetchzip {
+            url = "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip";
+            sha256 = "sha256-ayiIkXXgg83aPhAFs2WXvDxHqKizpVuAKF2AjZyjct4=";
+            stripRoot = false;
+          };
         };
       };
     };
@@ -223,7 +209,7 @@ in {
       owner = "Acly";
       repo = "comfyui-tooling-nodes";
       rev = "bcb591c7b998e13f12e2d47ee08cf8af8f791e50";
-      hash = "sha256-dXeDABzu0bhMDN/ryHac78oTyEBCmM/rxCIPfr99ol0=";
+      sha256 = "sha256-dXeDABzu0bhMDN/ryHac78oTyEBCmM/rxCIPfr99ol0=";
       fetchSubmodules = true;
     };
   };
@@ -237,7 +223,7 @@ in {
       owner = "ssitu";
       repo = "ComfyUI_UltimateSDUpscale";
       rev = "b303386bd363df16ad6706a13b3b47a1c2a1ea49";
-      hash = "sha256-kcvhafXzwZ817y+8LKzOkGR3Y3QBB7Nupefya6s/HF4=";
+      sha256 = "sha256-kcvhafXzwZ817y+8LKzOkGR3Y3QBB7Nupefya6s/HF4=";
       fetchSubmodules = true;
     };
   };
@@ -263,16 +249,14 @@ in {
         #   models/sams
         # but it also seems to want arbitrary write-access to the models dir......
 
-        insightface = {inherit (models.insightface) inswapper_128;};
-        facerestore_models = {
-          inherit
-            (models.facerestore_models)
-            "GFPGANv1.3"
-            "GFPGANv1.4"
-            "codeformer-v0.1.0"
-            GPEN-BFR-512
-            ;
-        };
+        inherit
+          (models)
+          inswapper_128
+          "GFPGANv1.3"
+          "GFPGANv1.4"
+          "codeformer-v0.1.0"
+          GPEN-BFR-512
+          ;
       };
     };
 
@@ -280,7 +264,7 @@ in {
       owner = "Gourieff";
       repo = "comfyui-reactor-node";
       rev = "05bf228e623c8d7aa5a33d3a6f3103a990cfe09d";
-      hash = "sha256-2IrpOp7N2GR1zA4jgMewAp3PwTLLZa1r8D+/uxI8yzw=";
+      sha256 = "sha256-2IrpOp7N2GR1zA4jgMewAp3PwTLLZa1r8D+/uxI8yzw=";
       fetchSubmodules = true;
     };
 

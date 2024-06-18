@@ -22,6 +22,15 @@ package management and complexity issues.
 
 The outputs run primarily on Linux, but can also run on Windows via [NixOS-WSL](https://github.com/nix-community/NixOS-WSL). It is able to utilize the GPU of the Windows host automatically, as our wrapper script sets `LD_LIBRARY_PATH` to make use of the host drivers.
 
+You can explore all this flake has to offer through the nix repl (tab-completion is your friend):
+```
+$ nix repl
+nix-repl> :lf github:nixified-ai/flake
+Added 26 variables.
+
+nix-repl>
+```
+
 The main outputs of the `flake.nix` at the moment are as follows:
 
 ## [ComfyUI](https://github.com/comfyanonymous/ComfyUI) ( A modular, node-based Stable Diffusion WebUI )
@@ -33,42 +42,18 @@ If you want to quickly get up and running, you have the option of using the pack
 ### Pre-configured server
 
 If you want to quickly get started with a pre-configured setup, you can run these ones made to serve the Krita plugin (Krita is not required to use them):
-- `nix run .#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
-- `nix run .#krita-comfyui-server-${vendor}` - a fully featured server to provide all functionality available through the plugin
+- `nix run github:nixified-ai/flake#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
+- `nix run github:nixified-ai/flake#krita-comfyui-server-${vendor}` - a fully featured server to provide all functionality available through the plugin
 
 Note that the `comfyui-${vendor}` packages come with no models or custom nodes. They serve as a base to override with your own config, as shown below.
 
 ### Custom setup
 
-To run your own setup, you can override the base package and add what you need: `nix eval --impure --expr 'with (builtins.getFlake "github:nixified-ai/flake"); packages.x86_64-linux."comfyui-'${vendor}'".override { models = ...; customNodes = ...; ... }`.
+To run your own setup, you can override the base package and add what you need: `nix eval --impure --expr 'with (builtins.getFlake "github:nixified-ai/flake"); packages.x86_64-linux."comfyui-'${vendor}'".override { models = {...}; customNodes = {...}; ... }`.
 
-Clearly, such expressions can become impractically long, so it's perhaps preferable to put it in a file. For example:
-```nix
-# ./my-comfyui.nix
-with (builtins.getFlake "github:nixified-ai/flake");
-let
-  vendor = "nvidia";
-  pkgs = legacyPackages.x86_64-linux.comfyui."${vendor}" // { comfyui = packages.x86_64-linux."comfyui-${vendor}"; };
-in
-  pkgs.comfyui.override {
-    models = pkgs.mergeModelSets [ pkgs.kritaModels.full (import ./my-models.nix) ];
-    customNodes = pkgs.kritaCustomNodes // (import ./my-custom-nodes.nix);
-    basePath = "/path/to/my-comfyui-base";
-    outputPath = "/tmp/comfyui-output";
-  }
-```
-and run it with `nix run --impure -f ./my-comfyui.nix`
+Clearly, such expressions can become unwieldy, and for that reason there is a template you can use to put your configuration into a flake.nix: `nix flake init -t github:nixified-ai/flake#templates.comfyui`.
 
-The available config options (and their defaults) are:
-- `basePath` (default: `"/var/lib/comfyui"`)
-- `inputPath` (default: `"${basePath}/input"`)
-- `outputPath` (default: `"${basePath}/output"`)
-- `tempPath` (default: `"${basePath}/temp"`)
-- `userPath` (default: `"${basePath}/user"`)
-
-(they are defined in [./projects/comfyui/package.nix](./projects/comfyui/package.nix).)
-
-Personal model sets and custom nodes can be defined in the same way as [./projects/comfyui/](./projects/comfyui/){models,custom-nodes}/default.nix (set hash to `""` and attempt to build to get the correct one).
+See [./templates/comfyui/flake.nix](./templates/comfyui/flake.nix) to get an idea of how to specify models and nodes when overriding.
 
 Here is what is included in `legacyPackages.x86_64-linux.comfyui.${vendor}`:
 - `customNodes` - the full set of available custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
@@ -77,19 +62,20 @@ Here is what is included in `legacyPackages.x86_64-linux.comfyui.${vendor}`:
 - `kritaModels` - the subset of `models` relevant to the Krita plugin (see [./projects/comfyui/models/krita-ai-plugin.nix](./projects/comfyui/models/krita-ai-plugin.nix))
   - `kritaModels.minimal` - models expected by the plugin
   - `kritaModels.full` - minimal plus models needed for all optional features of the plugin
-- `mergeModelSets` - helper to easily merge a list of model sets (see above for usage example)
 
 ## [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
 
-- `nix run .#invokeai-amd`
-- `nix run .#invokeai-nvidia`
+(warning: unmaintained - you have to use the last working commit in order to use it)
+- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#invokeai-amd`
+- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#invokeai-nvidia`
 
 ![invokeai](https://raw.githubusercontent.com/nixified-ai/flake/images/invokeai.webp)
 
 ## [textgen](https://github.com/oobabooga/text-generation-webui) ( Also called text-generation-webui: A WebUI for LLMs and LoRA training )
 
-- `nix run .#textgen-amd`
-- `nix run .#textgen-nvidia`
+(warning: unmaintained - you have to use the last working commit in order to use it)
+- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#textgen-amd`
+- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#textgen-nvidia`
 
 ![textgen](https://raw.githubusercontent.com/nixified-ai/flake/images/textgen.webp)
 

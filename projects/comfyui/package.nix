@@ -2,6 +2,7 @@
   lib,
   python3,
   linkFarm,
+  symlinkJoin,
   writers,
   writeTextFile,
   fetchFromGitHub,
@@ -13,59 +14,71 @@
   outputPath ? "${basePath}/output",
   tempPath ? "${basePath}/temp",
   userPath ? "${basePath}/user",
-}: let
-  mergeModelSets = import ./models/merge-sets.nix;
+}:
+with builtins; let
+  t = lib.types;
+  expectType = ty: name: x:
+    if ty.check x
+    then x
+    else throw "${name} (of type ${x._type or (builtins.typeOf x)}) was expected to be of type ${ty.description}";
+
+  expectModel = expectType (lib.mkOptionType {
+    name = "comfyui-model";
+    description = "ComfyUI model";
+    check = m:
+      lib.isAttrs m
+      && (hasAttr "installPath" m && t.singleLineStr.check m.installPath)
+      && (hasAttr "src" m && (t.package.check m.src || t.pathInStore.check m.src));
+  });
 
   # aggregate all custom nodes' dependencies
-  dependencies = with builtins;
-    lib.pipe customNodes [
-      attrValues
-      (map (v: v.dependencies))
-      (foldl'
-        ({
-          pkgs,
-          models,
-        }: x: {
-          pkgs = pkgs ++ (x.pkgs or []);
-          models = mergeModelSets [models (x.models or {})];
-        })
-        {
-          pkgs = [];
-          models = {};
-        })
-    ];
+  dependencies = lib.pipe customNodes [
+    attrValues
+    (map (v: v.dependencies))
+    (foldl'
+      ({
+        pkgs,
+        models,
+      }: x: {
+        pkgs = pkgs ++ (x.pkgs or []);
+        models = models // (x.models or {});
+      })
+      {
+        pkgs = [];
+        models = {};
+      })
+  ];
   # create a derivation for our custom nodes
   customNodesDrv =
-    lib.trivial.throwIfNot (lib.lists.all lib.isDerivation (builtins.attrValues customNodes)) ''
-      `customNodes` should be a set of custom node derivations in the form of `{ my-node = «derivation»; ... }`
-    ''
-    (linkFarm "comfyui-custom-nodes" customNodes);
+    expectType (t.attrsOf t.package)
+    "customNodes" (linkFarm "comfyui-custom-nodes" customNodes);
   # create a derivation for our models
-  modelsDrv = with builtins; let
-    inherit (lib.attrsets) concatMapAttrs;
-    concatMapModels = f: concatMapAttrs (type: concatMapAttrs (f type));
-    # create a flattened set from our nested model set;
-    # attribute name is the file path to the model;
-    # value is the store path of the fetched model.
-    toNamePath = concatMapModels (type: _name: fetched: let
-      # The structure is a bit convoluted so mistakes are easy to make but hard to find. Some helpful information may prove helpful.
-      fetchedStr = "{ ${concatStringsSep " " (map (n: "${n} = «${fetched.type or typeOf fetched."${n}"}»;") (lib.attrNames fetched))} }";
-      name =
-        fetched.name
-        or (throw ''
-          no attribute "name" in `${type}.${_name} = ${fetchedStr}`
-          Hint:
-            "${type}" should be the model's type,
-            "${_name}" should be the model's name, and
-            `${type}.${_name}` should be a derivation.
-          Tip: Make sure your models are defined inside their respecive type attribute and that the model set doesn't include other types of assets.
-          The model set should look something like this: `{ checkpoints = { ... }; vae.sdxl_vae = «derivation»; ... }`
-        '');
-    in {
-      "${type}/${name}" = fetched;
-    });
+  modelsDrv = let
+    mkComfyUIModel = name: {
+      src,
+      installPath,
+      meta ? {},
+    }:
+      stdenv.mkDerivation {
+        inherit src meta;
+        name = src.name;
+        phases = ["buildPhase"];
+        buildPhase = ''
+          dir=${builtins.dirOf (expectType t.singleLineStr "'installPath' attribute in argument to mkComfyUIModel" installPath)}
+          mkdir -p $out/$dir
+          ln -s $src $out/${installPath}
+        '';
+      };
   in
-    linkFarm "comfyui-models" (toNamePath (mergeModelSets [models dependencies.models]));
+    # WARN: this *replaces* existing paths when symlinking
+    symlinkJoin {
+      name = "comfyui-models";
+      paths =
+        lib.mapAttrsToList
+        (name: m: mkComfyUIModel name (expectModel name m))
+        (models // dependencies.models);
+      postBuild = "echo links added";
+    };
 
   config-data = {
     comfyui = let
@@ -155,12 +168,10 @@ in
       ln -snf ${modelsDrv} $out/models
       echo "Copying executable script"
       cp ${executable}/bin/comfyui $out/bin/comfyui
-      substituteInPlace $out/bin/comfyui --replace "\$out" "$out"
+      substituteInPlace $out/bin/comfyui --replace-warn "\$out" "$out"
       echo "Patching python code..."
-      # TODO: Evaluate if we can get rid of this on the latest version - there
-      # seems to be a lot more arguments available now.
-      substituteInPlace $out/folder_paths.py --replace "if not os.path.exists(input_directory):" "if False:"
-      substituteInPlace $out/folder_paths.py --replace 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "user")' '"${userPath}"'
+      substituteInPlace $out/folder_paths.py --replace-warn "if not os.path.exists(input_directory):" "if False:"
+      substituteInPlace $out/folder_paths.py --replace-warn 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "user")' '"${userPath}"'
       runHook postInstall
     '';
 

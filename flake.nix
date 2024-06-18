@@ -49,6 +49,12 @@
         };
         formatter = pkgs.alejandra;
       };
+      flake.templates = {
+        comfyui = {
+          path = ./templates/comfyui;
+          description = "A basic ComfyUI configuration to get you started";
+        };
+      };
       systems = [
         "x86_64-linux"
       ];
