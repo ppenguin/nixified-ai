@@ -40,7 +40,7 @@
         };
       in {
         packages.default = self'.packages.comfyui;
-        packages.comfyui = comfyui.override {
+        packages.comfyui = comfyui.override rec {
           # good-model is a dependency of good-node, so it will be added anyway
           # models = {inherit (myModels) good-model;};
 
