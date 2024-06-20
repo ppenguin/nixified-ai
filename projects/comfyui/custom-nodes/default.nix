@@ -41,6 +41,9 @@ in {
       rev = "1c4c4b4f9a99e7e6eb7c5a5f3fdc7c9dfd319357";
       sha256 = "sha256-Qsx2GE7nDf4VDjS9KCzeUmJE5AR9IGm9i2DM5qmXswM=";
     };
+    # also need models, e.g. https://github.com/styler00dollar/VSGAN-tensorrt-docker/releases/download/models/rife49.pth
+    # see https://github.com/Fannovel16/ComfyUI-Frame-Interpolation/blob/main/vfi_utils.py#L96 for sources
+    # and https://github.com/Fannovel16/ComfyUI-Frame-Interpolation/blob/main/vfi_models/rife/__init__.py for required models
     passthru.dependencies.pkgs = with python3Packages; [
       cupy
       einops
@@ -139,6 +142,26 @@ in {
       rev = "8b800e41bd86ce8f47ec077c839f8b11e52872b2";
       sha256 = "sha256-7WepT234aSMCiaUqiDBH/Xgd8ZvpEc/V5dG3Nld1ysI=";
       fetchSubmodules = true;
+    };
+  };
+
+  # https://github.com/cubiq/ComfyUI_essentials
+  essentials = mkComfyUICustomNodes {
+    pname = "comfyui-essentials";
+    version = "unstable-2024-06-25";
+    src = fetchFromGitHub {
+      owner = "cubiq";
+      repo = "ComfyUI_essentials";
+      rev = "5f1fc52acb03196d683552ea780e5c5325396f18";
+      sha256 = "sha256-9Xb9Iqww46qXlEtkA0lbz4zQRPzuN71T1NJjO4B2Rl8=";
+    };
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        numba
+        colour-science
+        rembg
+        pixeloe
+      ];
     };
   };
 

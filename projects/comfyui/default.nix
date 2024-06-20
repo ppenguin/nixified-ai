@@ -13,10 +13,16 @@ in {
     ...
   }: let
     commonOverlays = [
-      # TODO: identify what we actually need
+      (final: prev: {
+        opencv-python-headless = final.opencv-python;
+        opencv-python = final.opencv4;
+      })
       (l.overlays.callManyPackages [
         ../../packages/mediapipe
         ../../packages/spandrel
+        ../../packages/colour-science
+        ../../packages/rembg
+        ../../packages/pixeloe
       ])
       # what gives us a python with the overlays actually applied
       overlays.python-pythonFinal
