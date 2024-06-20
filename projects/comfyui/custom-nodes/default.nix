@@ -166,6 +166,52 @@ in {
     };
   };
 
+  # https://github.com/kijai/ComfyUI-IC-Light
+  ic-light = mkComfyUICustomNodes {
+    pname = "ic-light";
+    version = "unstable-2024-06-19";
+    src = fetchFromGitHub {
+      owner = "kijai";
+      repo = "ComfyUI-IC-Light";
+      rev = "476303a5a9926e7cf61b2b18567a416d0bdd8d8c";
+      sha256 = "sha256-5s2liguOHNwIV9PywFCCbYzROd6KscwYtk+RHEAmPFs=";
+    };
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        opencv-python
+      ];
+      models = {
+        ic-light_fbc = {
+          installPath = "ComfyUI/models/unet/iclight_sd15_fbc.safetensors";
+          src = fetchFromHuggingFace {
+            owner = "lllyasviel";
+            repo = "ic-light";
+            resource = "iclight_sd15_fbc.safetensors";
+            sha256 = "sha256-u4zO2qSUSxbPqDVq/LwsIXTMTEr1feGRJK4M3dDZaUc=";
+          };
+        };
+        ic-light_fc = {
+          installPath = "ComfyUI/models/unet/iclight_sd15_fc.safetensors";
+          src = fetchFromHuggingFace {
+            owner = "lllyasviel";
+            repo = "ic-light";
+            resource = "iclight_sd15_fc.safetensors";
+            sha256 = "sha256-oDP7qqLz94WfpqRHfuY+u/nBFr81adWBGFbSgH80aM0=";
+          };
+        };
+        ic-light_fcon = {
+          installPath = "ComfyUI/models/unet/iclight_sd15_fcon.safetensors";
+          src = fetchFromHuggingFace {
+            owner = "lllyasviel";
+            repo = "ic-light";
+            resource = "iclight_sd15_fcon.safetensors";
+            sha256 = "sha256-N2Uu8nAoyP25iCgwsWIeTmSNJuGcsgNaavjVLzptjYc=";
+          };
+        };
+      };
+    };
+  };
+
   # https://github.com/cubiq/ComfyUI_InstantID
   # only for SD XL
   instantid = mkComfyUICustomNodes {
