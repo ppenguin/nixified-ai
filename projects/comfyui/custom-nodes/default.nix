@@ -159,10 +159,11 @@ in {
       pkgs = with python3Packages; [
         numba
         colour-science
-        rembg
+        jsonschema
         pixeloe
         pooch
         pymatting
+        rembg
       ];
     };
   };
