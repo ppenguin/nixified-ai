@@ -148,7 +148,7 @@ in {
   # https://github.com/cubiq/ComfyUI_essentials
   essentials = mkComfyUICustomNodes {
     pname = "comfyui-essentials";
-    version = "unstable-2024-06-25";
+    version = "unstable-2024-06-15";
     src = fetchFromGitHub {
       owner = "cubiq";
       repo = "ComfyUI_essentials";
