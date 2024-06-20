@@ -161,6 +161,7 @@ in {
         colour-science
         rembg
         pixeloe
+        pymatting
       ];
     };
   };
