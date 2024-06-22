@@ -266,13 +266,13 @@ in {
   # (checkpoints?).
   ipadapter-plus = mkComfyUICustomNodes {
     pname = "comfyui-ipadapter-plus";
-    version = "unstable-2024-04-10";
+    version = "unstable-2024-06-9";
     pyproject = true;
     src = fetchFromGitHub {
       owner = "cubiq";
       repo = "ComfyUI_IPAdapter_plus";
-      rev = "417d806e7a2153c98613e86407c1941b2b348e88";
-      sha256 = "sha256-yuZWc2PsgMRCFSLTqniZDqZxevNt2/na7agKm7Xhy7Y=";
+      rev = "7d8adaec730bff243cc3026eed5111695cc5ed4e";
+      sha256 = "sha256-F0mmJ2X+eEijsV24s9I+zP90wpNC9pu8IwdEzq0xj8M=";
       fetchSubmodules = true;
     };
 
