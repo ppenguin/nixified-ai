@@ -62,7 +62,7 @@ in {
   # Nodes for providing ControlNet hint images.
   controlnet-aux = mkComfyUICustomNodes {
     pname = "comfyui-controlnet-aux";
-    version = "unstable-2024-04-05";
+    version = "unstable-2024-06-21";
     pyproject = true;
     passthru.dependencies.pkgs = with python3Packages; [
       addict
@@ -124,8 +124,8 @@ in {
     src = fetchFromGitHub {
       owner = "Fannovel16";
       repo = "comfyui_controlnet_aux";
-      rev = "c0b33402d9cfdc01c4e0984c26e5aadfae948e05";
-      sha256 = "sha256-D9nzyE+lr6EJ+9Egabu+th++g9ZR05wTg0KSRUBaAZE=";
+      rev = "589af18adae7ff50009a0e021781dd1aa39c32e3";
+      sha256 = "sha256-J9sJAr+zj2+HNAMQGc9a1i2dcf863y8Hq/ORpLGVWOw=";
       fetchSubmodules = true;
     };
   };
@@ -299,13 +299,13 @@ in {
   # Make ComfyUI more friendly towards API usage.
   tooling-nodes = mkComfyUICustomNodes {
     pname = "comfyui-tooling-nodes";
-    version = "unstable-2024-03-04";
+    version = "unstable-2024-06-20";
     pyproject = true;
     src = fetchFromGitHub {
       owner = "Acly";
       repo = "comfyui-tooling-nodes";
-      rev = "bcb591c7b998e13f12e2d47ee08cf8af8f791e50";
-      sha256 = "sha256-dXeDABzu0bhMDN/ryHac78oTyEBCmM/rxCIPfr99ol0=";
+      rev = "aff32e8da6db5db73bc6f84b30c87862e211544c";
+      sha256 = "sha256-6i1PGog8ZNBwO9FDFjneWRCx8Cn6N1N1hZhzI64GLNk=";
       fetchSubmodules = true;
     };
   };
