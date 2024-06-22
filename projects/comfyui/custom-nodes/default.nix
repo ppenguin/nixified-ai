@@ -56,6 +56,7 @@ in {
       torchvision
       tqdm
     ];
+    meta.broken = true;
   };
 
   # https://github.com/Fannovel16/comfyui_controlnet_aux
