@@ -107,20 +107,29 @@ in {
         url = "https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_ucoco_384.onnx";
         sha256 = "sha256-ck9P8kOe1hr7hvuKGVHsOcYiBoKAO0qL1PWYzZE7GEM=";
       };
+      # https://huggingface.co/spaces/LiheYoung/Depth-Anything/resolve/main/checkpoints/depth_anything_vitb14.pth
+      depth_anything = filename:
+        import <nix/fetchurl.nix> {
+          name = filename;
+          # observed url when it tries to download on its own
+          url = "https://cdn-lfs-us-1.huggingface.co/repos/b2/a8/b2a84b9a6ef705fba73e7ccec6a9728b3427d8b4c7f536eae186110f0cbd700f/64ae214ae4e27424b644c49464c0aa243016f6f753d95097c8eb9ad0b9cb2d9b?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27${filename}%3B+filename%3D%22${filename}%22%3B&Expires=1719406653&Policy=eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTcxOTQwNjY1M319LCJSZXNvdXJjZSI6Imh0dHBzOi8vY2RuLWxmcy11cy0xLmh1Z2dpbmdmYWNlLmNvL3JlcG9zL2IyL2E4L2IyYTg0YjlhNmVmNzA1ZmJhNzNlN2NjZWM2YTk3MjhiMzQyN2Q4YjRjN2Y1MzZlYWUxODYxMTBmMGNiZDcwMGYvNjRhZTIxNGFlNGUyNzQyNGI2NDRjNDk0NjRjMGFhMjQzMDE2ZjZmNzUzZDk1MDk3YzhlYjlhZDBiOWNiMmQ5Yj9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPSoifV19&Signature=XDSvjG3AZZEL66gSsa4R5uE9bWFOA-wbiqkG7eX3t57nrZjdMmhVBjZxuXrB5TV-jjP0ZX52fDUlfIqbPjmsknxQql3aqFftJOhvbu7D467ng6HDw54yuVlIZ7ZQ7Z5kOuyAt3WSNyRQdgPVFQtb7~nvZmAbUheHdZWysg9ArCgYCRyKTPlR2hwyns9xTPlXkihkEcFK1vuVOENWXmOok~0-Ri6lgTiqBDA8OCoRasgSoxBHyApHi8CWfoJRj-MpmqBDC48lsM8xDU3perWtZ6LPfmrPmJz-KnOqZ~Ou~tFdfGOLyf66hBKN0~JH08L7Fr6c6A1Bty9mtZUQ4iuN9Q__&Key-Pair-Id=K2FPYV99P2N66Q";
+          sha256 = "sha256-ZK4hSuTidCS2RMSUZMCqJDAW9vdT2VCXyOua0LnLLZs=";
+        };
+      depth_anything_vitb14 = depth_anything "depth_anything_vitb14.pth";
+      depth_anything_vitl14 = depth_anything "depth_anything_vitl14.pth";
+      depth_anything_vits14 = depth_anything "depth_anything_vits14.pth";
     in ''
       runHook preInstall
       mkdir -p $out/ckpts/yzd-v/DWPose
+      mkdir -p $out/ckpts/LiheYoung/Depth-Anything/checkpoints
       ${install}
       ln -s ${yolox_l} $out/ckpts/yzd-v/DWPose/${yolox_l.name}
       ln -s ${dw-ll_ucoco_384} $out/ckpts/yzd-v/DWPose/${dw-ll_ucoco_384.name}
+      ln -s ${depth_anything_vitb14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vitb14.name}
+      ln -s ${depth_anything_vitl14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vitl14.name}
+      ln -s ${depth_anything_vits14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vits14.name}
       runHook postInstall
     '';
-
-    # ckpts/yzd-v/DWPose/yolox_l.onnx
-    # https://huggingface.co/yzd-v/DWPose/resolve/main/yolox_l.onnx
-
-    # ckpts/yzd-v/DWPose/dw-ll_ucoco_384.onnx
-    # https://huggingface.co/yzd-v/DWPose/blob/main/dw-ll_ucoco_384.onnx
 
     src = fetchFromGitHub {
       owner = "Fannovel16";
