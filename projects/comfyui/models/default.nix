@@ -2,6 +2,18 @@
 with {inherit (import ./meta.nix) base-models model-types;}; let
   fetchFromUrl = import <nix/fetchurl.nix>;
 in {
+  # https://civitai.com/models/119229?modelVersionId=563988
+  zavy-chroma-xl = {
+    installPath = "checkpoints/zavychromaxl_v80.safetensors";
+    src = fetchFromUrl {
+      name = "zavychromaxl_v80";
+      url = "https://civitai.com/api/download/models/563988?type=Model&format=SafeTensor&size=full&fp=fp16";
+      sha256 = "sha256-Ha2znkA6gYxmOKjD44RDfbi66f5KN3CVWStjnZPMgQY=";
+    };
+    type = checkpoint;
+    base = sdxl;
+  };
+
   realisticVisionV51_v51VAE = {
     installPath = "checkpoints/realisticVisionV51_v51VAE.safetensors";
     src = fetchFromHuggingFace {
@@ -193,6 +205,57 @@ in {
     base = sd15;
   };
 
+  # https://huggingface.co/TheMistoAI/MistoLine
+  mistoline = {
+    installPath = "controlnet/mistoLine_rank256.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "TheMistoAI";
+      repo = "MistoLine";
+      resource = "mistoLine_rank256.safetensors";
+      sha256 = "sha256-bEbIcaSb+edBFPDh+H2BhCYgP9YoR+eAQ+TOLUCDTVM=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
+  # https://huggingface.co/lllyasviel/sd_control_collection
+  sai_xl_canny_256lora = {
+    installPath = "controlnet/sai_xl_canny_256lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "lllyasviel";
+      repo = "sd_control_collection";
+      resource = "sai_xl_canny_256lora.safetensors";
+      sha256 = "sha256-ySaXIbH3BDYl51t94vZaYRayrZmJWWVJRhbz8shUj1Q=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
+  # https://huggingface.co/xinsir/controlnet-canny-sdxl-1.0/blob/main/diffusion_pytorch_model_V2.safetensors
+  xinsir-canny-xl-v2 = {
+    installPath = "controlnet/xinsircanny-xl-v2.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "xinsir";
+      repo = "controlnet-canny-sdxl-1.0";
+      resource = "diffusion_pytorch_model_V2.safetensors";
+      sha256 = "sha256-s+SsR7yBQBnVDchC9XkwFEDettjwnuG5GjD1J6zhuFI=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
+  # https://huggingface.co/depth-anything/Depth-Anything-V2-Base
+  depth-anything-v2 = {
+    installPath = "controlnet/depth_anything_v2_vitb.pth";
+    src = fetchFromHuggingFace {
+      owner = "depth-anything";
+      repo = "Depth-Anything-V2-Base";
+      resource = "depth_anything_v2_vitb.pth";
+      sha256 = "sha256-DStwAuYtOdZVVxw3EzM0C9iPZ6uVBQwDWRVVqgVkUyg=";
+    };
+    type = controlnet;
+  };
+
   # https://huggingface.co/TencentARC/PhotoMaker
   # for preserving character identity
   photomaker = {
@@ -332,6 +395,19 @@ in {
     base = sd15;
   };
 
+  # https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0/blob/main/
+  xinsir-openpose-xl = {
+    installPath = "controlnet/xinsiropenpose_xl.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "xinsir";
+      repo = "controlnet-openpose-sdxl-1.0";
+      resource = "diffusion_pytorch_model.safetensors";
+      sha256 = "sha256-uFJOVXp99g0IH11KDrEJln0QffIXlDv4jC2ZuevMBsU=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
   control-lora-openposexl2-rank = {
     installPath = "controlnet/control-lora-openposexl2-rank.safetensors";
     src = fetchFromHuggingFace {
@@ -356,6 +432,19 @@ in {
     base = sd15;
   };
 
+  # https://huggingface.co/abovzv/sdxl_segmentation_controlnet_ade20k
+  sdxl_segmentation_controlnet_ade20k = {
+    installPath = "controlnet/sdxl_segmentation_ade20k_controlnet.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "abovzv";
+      repo = "sdxl_segmentation_controlnet_ade20k";
+      resource = "sdxl_segmentation_ade20k_controlnet.safetensors";
+      sha256 = "sha256-cOLDkmMQIrW+ljoZHAgTHPg5fjTHdMfm0r56q+Z+H8o=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
   control_lora_rank128_v11p_sd15_seg = {
     installPath = "controlnet/control_lora_rank128_v11p_sd15_seg.safetensors";
     src = fetchFromHuggingFace {
@@ -366,6 +455,19 @@ in {
     };
     type = controlnet;
     base = sd15;
+  };
+
+  # https://huggingface.co/monster-labs/control_v1p_sdxl_qrcode_monster
+  control_v1p_sdxl_qrcode_monster = {
+    installPath = "controlnet/control_v1p_sdxl_qrcode_monster.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "monster-labs";
+      repo = "control_v1p_sdxl_qrcode_monster";
+      resource = "diffusion_pytorch_model.safetensors";
+      sha256 = "sha256-EeSbTicvq9pgCUs1vm/T4hXlUSESEJOOOB0nSX/SIVw=";
+    };
+    type = controlnet;
+    base = sdxl;
   };
 
   control_v1p_sd15_qrcode_monster = {
@@ -411,6 +513,19 @@ in {
       repo = "control-lora";
       resource = "control-LoRAs-rank128/control-lora-recolor-rank128.safetensors";
       sha256 = "sha256-1sAdWIVQ1Bq0f/JTSuE1RB7Y5hS3KzFnh+i3kWzgjmE=";
+    };
+    type = controlnet;
+    base = sdxl;
+  };
+
+  # https://huggingface.co/xinsir/controlnet-scribble-sdxl-1.0
+  xinsir-scribble-sdxl = {
+    installPath = "controlnet/xinsirscribble-sdxl.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "xinsir";
+      repo = "controlnet-scribble-sdxl-1.0";
+      resource = "diffusion_pytorch_model.safetensors";
+      sha256 = "sha256-s+SsR7yBQBnVDchC9XkwFEDettjwnuG5GjD1J6zhuFI=";
     };
     type = controlnet;
     base = sdxl;
@@ -675,6 +790,32 @@ in {
     type = ipadapter;
     base = sdxl;
   };
+
+  # https://huggingface.co/ByteDance/Hyper-SD
+  hyper-sd15 = {
+    installPath = "loras/Hyper-SD15-8steps-CFG-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SD15-8steps-CFG-lora.safetensors";
+      sha256 = "sha256-9hI9W5UNUlCrbDNgDif03PcbMJnr+IhoXgHp6BF85II=";
+    };
+    type = lora;
+    base = sd15;
+  };
+
+  hyper-sdxl = {
+    installPath = "loras/Hyper-SDXL-8steps-CFG-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SDXL-8steps-CFG-lora.safetensors";
+      sha256 = "sha256-VbUTNMhQYa//Xv98VQthljyLhgelhou+TybbSTdHGbE=";
+    };
+    type = lora;
+    base = sdxl;
+  };
+
   lcm-lora-sdv1-5 = {
     installPath = "loras/lcm-lora-sdv1-5.safetensors";
     src = fetchFromHuggingFace {

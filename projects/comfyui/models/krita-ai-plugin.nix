@@ -4,6 +4,7 @@ models: let
       (models)
       DreamShaper_8_pruned
       juggernautXL_version6Rundiffusion
+      zavy-chroma-xl
       realisticVisionV51_v51VAE
       fooocus_inpaint_head
       inpaint_v26-fooocus
@@ -13,17 +14,23 @@ models: let
       control_v11p_sd15_inpaint_fp16
       ip-adapter_sd15
       ip-adapter_sdxl_vit-h
-      lcm-lora-sdv1-5
-      lcm-lora-sdxl
+      hyper-sd15
+      hyper-sdxl
       OmniSR_X2_DIV2K
       OmniSR_X3_DIV2K
       OmniSR_X4_DIV2K
+      "4x_NMKD-Superscale-SP_178000_G"
       ;
   };
 
   optional = {
     inherit
       (models)
+      mistoline
+      depth-anything-v2
+      sai_xl_canny_256lora
+      xinsir-openpose-xl
+      sdxl_segmentation_controlnet_ade20k
       control_lora_rank128_v11p_sd15_scribble # control_v11p_sd15_scribble
       control-lora-sketch-rank
       control_lora_rank128_v11p_sd15_lineart # control_v11p_sd15_lineart
@@ -37,8 +44,9 @@ models: let
       control-lora-openposexl2-rank # thibaud_xl_openpose
       control_lora_rank128_v11p_sd15_seg # control_v11p_sd15_seg
       ttplanet_sdxl_controlnet_tile_realistic # ttplanetsdxlcontrolnet
-      control_v1p_sd15_qrcode_monster
       control_sd15_inpaint_depth_hand
+      control_v1p_sd15_qrcode_monster
+      control_v1p_sdxl_qrcode_monster
       ip-adapter-faceid-plusv2_sd15 # ip-adapter-faceid-plus_sd15
       ip-adapter-faceid-plusv2_sdxl # ip-adapter-faceid_sdxl;
       ip-adapter-faceid-plusv2_sd15_lora # ip-adapter-faceid-plus_sd15_lora
