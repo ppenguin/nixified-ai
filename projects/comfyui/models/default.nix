@@ -193,6 +193,20 @@ in {
     base = sd15;
   };
 
+  # https://huggingface.co/TencentARC/PhotoMaker
+  # for preserving character identity
+  photomaker = {
+    installPath = "photomaker/photomaker-v1.bin";
+    src = fetchFromHuggingFace {
+      owner = "TencentARC";
+      repo = "PhotoMaker";
+      resource = "photomaker-v1.bin";
+      sha256 = "sha256-Up1QP6N4v7OnTjOEqyBk1yadWfBjgyRVXSIGfDHidbw=";
+    };
+    # type = "???";
+    base = sdxl; # ?
+  };
+
   # https://huggingface.co/lllyasviel/ControlNet-v1-1
   # https://github.com/lllyasviel/ControlNet-v1-1-nightly
   # See also the accompanying controlnet-v1_1_f1e-sd15-tile.
