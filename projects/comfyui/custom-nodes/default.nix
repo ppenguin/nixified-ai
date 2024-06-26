@@ -372,7 +372,30 @@ in {
     };
   };
 
+  # https://github.com/kijai/ComfyUI-KJNodes
+  kjnodes = mkComfyUICustomNodes {
+    pname = "comfyui-kjnodes";
+    version = "unstable-2024-06-25";
+    src = fetchFromGitHub {
+      owner = "kijai";
+      repo = "ComfyUI-KJNodes";
+      rev = "2ead4fae1dddfe65d951248d98a1ff11dd50ab7a";
+      sha256 = "sha256-cEoeHmRWTXO8DYU09n+eio3nLQGVROXy9+YWh8szXxA=";
+    };
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        # color-matcher # doesn't exist
+        librosa
+        matplotlib
+        numpy
+        pillow
+        scipy
+      ];
+    };
+  };
+
   # https://github.com/kijai/ComfyUI-IC-Light
+  # TODO: this sort of depends on kjnodes in that it appears to be effectively unusable without it; add `passthru.dependencies.nodes`?
   ic-light = mkComfyUICustomNodes {
     pname = "comfyui-ic-light";
     version = "unstable-2024-06-19";
