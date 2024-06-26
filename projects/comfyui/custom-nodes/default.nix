@@ -118,16 +118,19 @@ in {
       depth_anything_vitb14 = depth_anything "depth_anything_vitb14.pth";
       depth_anything_vitl14 = depth_anything "depth_anything_vitl14.pth";
       depth_anything_vits14 = depth_anything "depth_anything_vits14.pth";
+      depth_anything_v2_vitb = models.depth-anything-v2.src;
     in ''
       runHook preInstall
       mkdir -p $out/ckpts/yzd-v/DWPose
       mkdir -p $out/ckpts/LiheYoung/Depth-Anything/checkpoints
+      mkdir -p $out/ckpts/depth-anything/Depth-Anything-V2-Base
       ${install}
       ln -s ${yolox_l} $out/ckpts/yzd-v/DWPose/${yolox_l.name}
       ln -s ${dw-ll_ucoco_384} $out/ckpts/yzd-v/DWPose/${dw-ll_ucoco_384.name}
       ln -s ${depth_anything_vitb14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vitb14.name}
       ln -s ${depth_anything_vitl14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vitl14.name}
       ln -s ${depth_anything_vits14} $out/ckpts/LiheYoung/Depth-Anything/checkpoints/${depth_anything_vits14.name}
+      ln -s ${depth_anything_v2_vitb} $out/ckpts/depth-anything/Depth-Anything-V2-Base/${depth_anything_v2_vitb.name}
       runHook postInstall
     '';
 
