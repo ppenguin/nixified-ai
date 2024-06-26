@@ -207,6 +207,25 @@ in {
     ];
   });
 
+  # https://github.com/dagthomas/comfyui_dagthomas
+  # SDXL/SD3 prompt generator
+  dagthomas = mkComfyUICustomNodes {
+    pname = "comfyui_dagthomas";
+    version = "unstable-2024-06-17";
+    pyproject = true;
+    src = fetchFromGitHub {
+      owner = "dagthomas";
+      repo = "comfyui_dagthomas";
+      rev = "60d8d5fdf0ef69c9787144ad085f6833f02ef58d";
+      sha256 = "sha256-SYBt0djVYHNKIBwiiQcpYeA7IS7/rBzzOvofEji0fDw=";
+    };
+    # TODO: surely there are dependencies
+    # passthru.dependencies = {
+    #   pkgs = with python3Packages; [
+    #   ];
+    # };
+  };
+
   # https://github.com/LEv145/images-grid-comfy-plugin
   images-grid-comfy-plugin = mkComfyUICustomNodes (let
     version = "2.6";
