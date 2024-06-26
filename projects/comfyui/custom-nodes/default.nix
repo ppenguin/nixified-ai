@@ -430,7 +430,7 @@ in {
       ];
       models = {
         ic-light_fbc = {
-          installPath = "ComfyUI/models/unet/iclight_sd15_fbc.safetensors";
+          installPath = "unet/iclight_sd15_fbc.safetensors";
           src = fetchFromHuggingFace {
             owner = "lllyasviel";
             repo = "ic-light";
@@ -439,7 +439,7 @@ in {
           };
         };
         ic-light_fc = {
-          installPath = "ComfyUI/models/unet/iclight_sd15_fc.safetensors";
+          installPath = "unet/iclight_sd15_fc.safetensors";
           src = fetchFromHuggingFace {
             owner = "lllyasviel";
             repo = "ic-light";
@@ -448,7 +448,7 @@ in {
           };
         };
         ic-light_fcon = {
-          installPath = "ComfyUI/models/unet/iclight_sd15_fcon.safetensors";
+          installPath = "unet/iclight_sd15_fcon.safetensors";
           src = fetchFromHuggingFace {
             owner = "lllyasviel";
             repo = "ic-light";
