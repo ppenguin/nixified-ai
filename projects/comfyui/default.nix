@@ -68,9 +68,8 @@ in {
     # everything here needs to be parametrised over gpu vendor
     legacyPkgs = vendor: rec {
       customNodes = import ./custom-nodes {
-        inherit models;
-        inherit fetchFromHuggingFace;
-        inherit (pkgs) stdenv fetchFromGitHub fetchzip;
+        inherit lib models fetchFromHuggingFace;
+        inherit (pkgs) stdenv fetchFromGitHub fetchzip writeText;
         python3Packages = python3Variants."${vendor}";
       };
       # subset of `customNodes` used by Krita plugin
