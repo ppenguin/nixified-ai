@@ -14,6 +14,7 @@
   outputPath ? "${basePath}/output",
   tempPath ? "${basePath}/temp",
   userPath ? "${basePath}/user",
+  extraArgs ? [],
 }:
 with builtins; let
   t = lib.types;
@@ -142,7 +143,7 @@ with builtins; let
       --output-directory ${outputPath} \
       --extra-model-paths-config ${modelPathsFile} \
       --temp-directory ${tempPath} \
-      "$@"
+      ${builtins.concatStringsSep " \\\n  " (extraArgs ++ ["$@"])}
   '';
 in
   stdenv.mkDerivation {

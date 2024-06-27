@@ -69,12 +69,14 @@
           };
 
           outputPath = "/tmp/comfyui-output";
+          extraArgs = ["--preview-method auto"];
           # these are the defaults
           # basePath = "/var/lib/comfyui";
           # inputPath = "${basePath}/input";
           # outputPath = "${basePath}/output";
           # tempPath = "${basePath}/temp";
           # userPath = "${basePath}/user";
+          # extraArgs = [];
         };
       };
     };
