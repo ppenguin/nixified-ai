@@ -401,16 +401,18 @@ in {
       rev = "2ead4fae1dddfe65d951248d98a1ff11dd50ab7a";
       sha256 = "sha256-cEoeHmRWTXO8DYU09n+eio3nLQGVROXy9+YWh8szXxA=";
     };
-    passthru.dependencies = {
-      pkgs = with python3Packages; [
-        # color-matcher # doesn't exist
-        librosa
-        matplotlib
-        numpy
-        pillow
-        scipy
-      ];
-    };
+    passthru.dependencies =
+      lib.trivial.warn
+      "not all deps for custom node kjnodes are satisfied (color-matcher, librosa) - some functionality will be unavailable" {
+        pkgs = with python3Packages; [
+          # color-matcher # doesn't exist
+          # librosa # broken
+          matplotlib
+          numpy
+          pillow
+          scipy
+        ];
+      };
   };
 
   # https://github.com/kijai/ComfyUI-IC-Light
