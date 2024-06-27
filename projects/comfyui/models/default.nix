@@ -245,7 +245,7 @@ in {
   };
 
   # https://huggingface.co/depth-anything/Depth-Anything-V2-Base
-  depth-anything-v2 = {
+  depth_anything_v2_vitb = {
     installPath = "controlnet/depth_anything_v2_vitb.pth";
     src = fetchFromHuggingFace {
       owner = "depth-anything";

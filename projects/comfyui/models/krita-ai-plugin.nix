@@ -27,7 +27,7 @@ models: let
     inherit
       (models)
       mistoline
-      depth-anything-v2
+      depth_anything_v2_vitb
       sai_xl_canny_256lora
       xinsir-openpose-xl
       sdxl_segmentation_controlnet_ade20k

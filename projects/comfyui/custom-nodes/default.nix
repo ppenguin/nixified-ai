@@ -328,7 +328,7 @@ in {
       depth_anything_vitb14 = depth_anything "depth_anything_vitb14.pth";
       depth_anything_vitl14 = depth_anything "depth_anything_vitl14.pth";
       depth_anything_vits14 = depth_anything "depth_anything_vits14.pth";
-      depth_anything_v2_vitb = models.depth-anything-v2.src;
+      depth_anything_v2_vitb = models.depth_anything_v2_vitb.src;
     in ''
       runHook preInstall
       mkdir -p $out/ckpts/yzd-v/DWPose
