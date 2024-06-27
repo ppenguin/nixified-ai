@@ -416,8 +416,33 @@ in {
       };
   };
 
+  # https://github.com/Fannovel16/ComfyUI-Video-Matting
+  # bg-fg separation
+  video-matting = mkComfyUICustomNodes {
+    pname = "comfyui-video-matting";
+    version = "unstable-2024-06-20";
+    pyproject = true;
+    src = fetchFromGitHub {
+      owner = "Fannovel16";
+      repo = "ComfyUI-Video-Matting";
+      rev = "dd5ff373c327ed9caa321bca54e4cab8104f3735";
+      sha256 = "sha256-aR1Xt2aI70QIGOUmd7gfB6g3AFE1+E6gBgzq04DvEUQ=";
+      fetchSubmodules = true;
+    };
+
+    passthru.dependencies = {
+      pkgs = with python3Packages; [
+        pillow
+        einops
+      ];
+    };
+  };
+
   # https://github.com/kijai/ComfyUI-IC-Light
   # TODO: this sort of depends on kjnodes in that it appears to be effectively unusable without it; add `passthru.dependencies.nodes`?
+  # recommended additional nodes:
+  #   - video-matting
+  #   - kjnodes
   ic-light = mkComfyUICustomNodes {
     pname = "comfyui-ic-light";
     version = "unstable-2024-06-19";
