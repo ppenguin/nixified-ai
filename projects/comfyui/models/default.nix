@@ -50,6 +50,27 @@ in {
     base = sdxl;
   };
 
+  # https://civitai.com/models/84728/photon
+  # photorealism
+  # Recommendation for generating the first image with Photon:
+  #     Prompt: A simple sentence in natural language describing the image.
+  #     Negative: "cartoon, painting, illustration, (worst quality, low quality, normal quality:2)"
+  #     Sampler: DPM++ 2M Karras | Steps: 20 | CFG Scale: 6
+  #     Size: 512x768 or 768x512
+  #     Hires.fix: R-ESRGAN 4x+ | Steps: 10 | Denoising: 0.45 | Upscale x 2
+  #     (avoid using negative embeddings unless absolutely necessary)
+  # From this initial point, experiment by adding positive and negative tags and adjusting the settings.
+  photon = {
+    installPath = "checkpoints/photon_v1.safetensors";
+    src = fetchFromUrl {
+      name = "photon_v1.safetensors";
+      url = "https://civitai.com/api/download/models/90072?type=Model&format=SafeTensor&size=pruned&fp=fp16";
+      sha256 = "sha256-7EG9KoJxrN5K6BysAE2fMwDn+whw6ujL/gu8Tvjif5E=";
+    };
+    type = checkpoint;
+    base = sd15;
+  };
+
   # A high quality checkpoint but beware it also does nsfw very
   # easily.
   # https://civitai.com/models/147720/colossus-project-xl-sfwandnsfw
