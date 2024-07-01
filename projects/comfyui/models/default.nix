@@ -3,6 +3,25 @@ with {inherit (import ./meta.nix) base-models model-types;}; let
   fetchFromUrl = import <nix/fetchurl.nix>;
 in {
   # https://civitai.com/models/119229?modelVersionId=563988
+  # Consider using DPM++ 3M SDE Exponential for this model
+  # TIPS
+  # To maintain optimal results and avoid excessive duplication of subjects, limit the generated image size to a maximum of 1024x1024 pixels or 640x1536 (or vice versa). If you require higher resolutions, it is recommended to utilise the Hires fix, followed by the img2img upscale technique, with particular emphasis on the controlnet tile upscale method. This approach will help you achieve superior results when aiming for higher resolution outputs. However, as this workflow doesn't work with SDXL yet, you may want to use an SD1.5 model for the img2img step.
+  # PROMPTS
+  # Recommended positive prompts for specifically photorealism: 2000s vintage RAW photo, photorealistic, film grain, candid camera, color graded cinematic, eye catchlights, atmospheric lighting, macro shot, skin pores, imperfections, natural, shallow dof, or other photography related tokens.
+  # Recommended negative prompts: As few negative prompts as you can, only use it when it does something you do not want, like watermarks. Consider using high contrast, oily skin, plastic skin if the skin is too contrasting or too oily/plastic. Also make sure to add anime to negative prompt if you want better photorealism, and more mature looking characters.
+  # You are further encouraged to include additional specific details regarding the desired output. This should involve specifying the preferred style, camera angle, lighting techniques, poses, color schemes, and other relevant factors.
+  # Recommended settings
+  #     sdxl_vae.safetensors (baked in).
+  #     DPM++ 3M SDE Exponential, DPM++ 2M SDE Karras, DPM++ 2M Karras, Euler A
+  #     Steps 20~40 (lower range for DPM, higher range for Euler).
+  #     Hires upscaler: UltraMix_Balanced.
+  #     Hires upscale: Whatever maximum your GPU is capable of, but preferably between 1.5x~2x.
+  #     CFG scale 4-10 (preferably somewhere around cfg 6-7)
+  # Lightning LoRA specific settings:
+  #     Euler sampler with SGM Uniform as Scheduler.
+  #     Steps 4 (use the 4 steps LoRA)
+  #     CFG scale 1-2 (CFG 1 at the higher weights for the LoRA)
+  #     LoRA weight 0.6-1
   zavy-chroma-xl = {
     installPath = "checkpoints/zavychromaxl_v80.safetensors";
     src = fetchFromUrl {
