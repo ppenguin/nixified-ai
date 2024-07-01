@@ -522,7 +522,7 @@ in {
       ];
       models = {
         instantid = {
-          installPath = "controlnet/diffusion_pytorch_model.safetensors";
+          installPath = "controlnet/instantid.safetensors";
           src = fetchFromHuggingFace {
             owner = "InstantX";
             repo = "InstantID";
