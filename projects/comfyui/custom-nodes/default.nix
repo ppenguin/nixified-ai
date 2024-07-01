@@ -430,6 +430,22 @@ in {
       fetchSubmodules = true;
     };
 
+    installPhase = let
+      # https://huggingface.co/briaai/RMBG-1.4/resolve/main/model.pth
+      briaai_rmbg = fetchFromHuggingFace {
+        owner = "briaai";
+        repo = "RMBG-1.4";
+        resource = "model.pth";
+        sha256 = "sha256-iTwWw0Cx3a/JPnhFek2UGQ2ptxeRSfhXQoTIPK6/Xow=";
+      };
+    in ''
+      runHook preInstall
+      mkdir -p $out/ckpts
+      ${install}
+      ln -s ${briaai_rmbg} $out/ckpts/briaai_rmbg_v1.4.pth
+      runHook postInstall
+    '';
+
     passthru.dependencies = {
       pkgs = with python3Packages; [
         pillow
