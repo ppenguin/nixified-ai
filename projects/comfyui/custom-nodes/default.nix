@@ -656,4 +656,17 @@ in {
 
     meta.broken = true;
   };
+
+  # https://github.com/JettHu/ComfyUI-TCD
+  tcd = mkComfyUICustomNodes {
+    pname = "comfyui-tcd";
+    version = "0.1.0";
+    pyproject = true;
+    src = fetchFromGitHub {
+      owner = "JettHu";
+      repo = "ComfyUI-TCD";
+      rev = "9f6f9cd10169775ac3b5a757b2afa696c43f8251";
+      sha256 = "sha256-5OLVWkNtgeivK9f1KyjpastT6U4xOQ+KenI48Sv8ies=";
+    };
+  };
 }
