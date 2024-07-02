@@ -14,8 +14,8 @@ models: let
       control_v11p_sd15_inpaint_fp16
       ip-adapter_sd15
       ip-adapter_sdxl_vit-h
-      hyper-sd15
-      hyper-sdxl
+      hyper-sd15-8steps-cfg
+      hyper-sdxl-8steps-cfg
       OmniSR_X2_DIV2K
       OmniSR_X3_DIV2K
       OmniSR_X4_DIV2K

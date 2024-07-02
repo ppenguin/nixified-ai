@@ -832,7 +832,33 @@ in {
   };
 
   # https://huggingface.co/ByteDance/Hyper-SD
-  hyper-sd15 = {
+
+  hyper-sd15-1step = {
+    installPath = "loras/Hyper-SD15-1step-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SD15-1step-lora.safetensors";
+      sha256 = "sha256-oE/ZpTXB5W0491kO5yoT/VygQJhTtP/wIeWpSCzxyjs=";
+    };
+    type = lora;
+    base = sd15;
+  };
+
+  hyper-sdxl-1step = {
+    installPath = "loras/Hyper-SDXL-1step-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SDXL-1step-lora.safetensors";
+      sha256 = "sha256-yRLfGExRFnktLGBNJsa8KqkWaF9KeTdVJVzaHEOjx4o=";
+    };
+    type = lora;
+    base = sdxl;
+  };
+
+  # https://huggingface.co/ByteDance/Hyper-SD
+  hyper-sd15-8steps-cfg = {
     installPath = "loras/Hyper-SD15-8steps-CFG-lora.safetensors";
     src = fetchFromHuggingFace {
       owner = "ByteDance";
@@ -844,13 +870,37 @@ in {
     base = sd15;
   };
 
-  hyper-sdxl = {
+  hyper-sd15-8steps = {
+    installPath = "loras/Hyper-SD15-8steps-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SD15-8steps-lora.safetensors";
+      sha256 = "sha256-kfwxhiNulW1k27Q1fy4SDGm5aLeK99LbmISlynTTzRM=";
+    };
+    type = lora;
+    base = sd15;
+  };
+
+  hyper-sdxl-8steps-cfg = {
     installPath = "loras/Hyper-SDXL-8steps-CFG-lora.safetensors";
     src = fetchFromHuggingFace {
       owner = "ByteDance";
       repo = "Hyper-SD";
       resource = "Hyper-SDXL-8steps-CFG-lora.safetensors";
       sha256 = "sha256-VbUTNMhQYa//Xv98VQthljyLhgelhou+TybbSTdHGbE=";
+    };
+    type = lora;
+    base = sdxl;
+  };
+
+  hyper-sdxl-8steps = {
+    installPath = "loras/Hyper-SDXL-8steps-lora.safetensors";
+    src = fetchFromHuggingFace {
+      owner = "ByteDance";
+      repo = "Hyper-SD";
+      resource = "Hyper-SDXL-8steps-lora.safetensors";
+      sha256 = "sha256-ymiRkOjEYDhVA4S1Z1SIUmz+WkDTX4Kyest1wQD0F8E=";
     };
     type = lora;
     base = sdxl;
