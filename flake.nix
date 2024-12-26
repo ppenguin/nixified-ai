@@ -1,7 +1,26 @@
 {
   nixConfig = {
-    extra-substituters = [ "https://ai.cachix.org" ];
-    extra-trusted-public-keys = [ "ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc=" ];
+    extra-trusted-substituters = [
+      "https://ai.cachix.org"
+      "https://cache.nixos.org/"
+      "https://nix-community.cachix.org"
+      "https://cuda-maintainers.cachix.org"
+      "https://numtide.cachix.org"
+    ];
+    extra-substituters = [
+      "https://ai.cachix.org"
+      "https://cache.nixos.org/"
+      "https://nix-community.cachix.org"
+      "https://cuda-maintainers.cachix.org"
+      "https://numtide.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+    ];
   };
 
   description = "A Nix Flake that makes AI reproducible and easy to run";
@@ -9,14 +28,6 @@
   inputs = {
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    };
-    invokeai-src = {
-      url = "github:invoke-ai/InvokeAI/v3.3.0post3";
-      flake = false;
-    };
-    textgen-src = {
-      url = "github:oobabooga/text-generation-webui/v1.7";
-      flake = false;
     };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -27,7 +38,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
+  outputs =
+    {
+      flake-parts,
+      hercules-ci-effects,
+      ...
+    }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       perSystem = { system, ... }: let
         pkgs = import inputs.nixpkgs {
@@ -55,19 +71,9 @@
           description = "A basic ComfyUI configuration to get you started";
         };
       };
-      systems = [
-        "x86_64-linux"
-      ];
-      debug = true;
       imports = [
+        ./flake-modules
         hercules-ci-effects.flakeModule
-        # ./modules/nixpkgs-config
-        ./overlays
-        ./projects/air
-        ./projects/comfyui
-        ./projects/invokeai
-        ./projects/textgen
-        ./website
       ];
     };
 }

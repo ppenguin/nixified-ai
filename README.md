@@ -20,7 +20,16 @@ The goal of nixified.ai is to simplify and make available a large repository of
 AI executable code that would otherwise be impractical to run yourself, due to
 package management and complexity issues.
 
-The outputs run primarily on Linux, but can also run on Windows via [NixOS-WSL](https://github.com/nix-community/NixOS-WSL). It is able to utilize the GPU of the Windows host automatically, as our wrapper script sets `LD_LIBRARY_PATH` to make use of the host drivers.
+The outputs run primarily on NixOS and-or Linux, but can also run on Windows via [NixOS-WSL](https://github.com/nix-community/NixOS-WSL). It is able to utilize the GPU of the Windows host automatically, as our wrapper script sets `LD_LIBRARY_PATH` to make use of the host drivers.
+
+You can explore all this flake has to offer through the nix repl (tab-completion is your friend):
+```
+$ nix repl
+nix-repl> :lf github:nixified-ai/flake
+Added 26 variables.
+
+nix-repl>
+```
 
 You can explore all this flake has to offer through the nix repl (tab-completion is your friend):
 ```
@@ -35,68 +44,32 @@ The main outputs of the `flake.nix` at the moment are as follows:
 
 ## [ComfyUI](https://github.com/comfyanonymous/ComfyUI) ( A modular, node-based Stable Diffusion WebUI )
 
-If you want to quickly get up and running, you have the option of using the packages meant to serve the [Krita AI plugin](https://github.com/Acly/krita-ai-diffusion) (currently supporting v1.24.0), but the flake also provides ways to customise your setup.
+(warning: this will give you an empty comfyui without custom_nodes or models, see [flake-modules/projects/comfyui/README.md](./flake-modules/projects/comfyui) for information on how to configure and use comfyui)
+- `nix run github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d#invokeai-nvidia`
+- `nix run github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d#invokeai-amd` (Broken due to lack of Nixpkgs ROCm support)
 
-`export vendor=amd` or `export vendor=nvidia` depending on your GPU.
+![ComfyUI Screenshot](https://github.com/user-attachments/assets/7ccaf2c1-9b72-41ae-9a89-5688c94b7abe)
 
-### Pre-configured server
-
-If you want to quickly get started with a pre-configured setup, you can run these ones made to serve the Krita plugin (Krita is not required to use them):
-- `nix run github:nixified-ai/flake#krita-comfyui-server-${vendor}-minimal` - includes the bare minimum requirements
-- `nix run github:nixified-ai/flake#krita-comfyui-server-${vendor}` - includes same set of models as the plugin's own docker-based server
-- `nix run github:nixified-ai/flake#krita-comfyui-server-${vendor}-full` - a fully featured server to provide all functionality available through the plugin
-
-Note that the `comfyui-${vendor}` packages come with no models or custom nodes. They serve as a base to override with your own config, as shown below.
-
-### Custom setup
-
-To run your own setup, you can override the base package and add what you need: `nix eval --impure --expr 'with (builtins.getFlake "github:nixified-ai/flake"); packages.x86_64-linux."comfyui-'${vendor}'".override { models = {...}; customNodes = {...}; extraArgs = ["--listen 0.0.0.0"]; ... }`.
-
-Clearly, such expressions can become unwieldy, and for that reason there is a template you can use to put your configuration into a flake.nix: `nix flake init -t github:nixified-ai/flake#templates.comfyui`.
-
-See [./templates/comfyui/flake.nix](./templates/comfyui/flake.nix) to get an idea of how to specify models and nodes when overriding.
-
-Since `nix flake show --legacy` is not particularly helpful, here is what is provided in `legacyPackages.x86_64-linux`:
-- `comfyui`
-  - `installModels` - a helper which allows declaring models by their AIR (convenient for resources hosted on https://civitai.com), URL, or a local file (as flake input)
-  - `kritaModelInstalls` - the Krita plugin model set (see [./projects/comfyui/krita-models.nix](./projects/comfyui/krita-models.nix))
-    - `required` - the minimal set of models required for the plugin to work
-    - `default` - the same set as the [plugin's own managed server](https://github.com/Acly/krita-ai-diffusion/blob/main/ai_diffusion/cloud_client.py)
-    - `full` - default plus extra models necessary to use all available features of the plugin
-  - `"${vendor}"` (anything gpu-vendor-dependent)
-    - `customNodes` - a set of packaged custom nodes (see [./projects/comfyui/custom-nodes/default.nix](./projects/comfyui/custom-nodes/default.nix))
-    - `kritaCustomNodes` - the subset of `customNodes` relevant to the Krita plugin (see [./projects/comfyui/custom-nodes/krita-ai-plugin.nix](./projects/comfyui/custom-nodes/krita-ai-plugin.nix))
-    - `python3Packages` - the python package set used by comfyui, so that new custom nodes can depend on the same package set
+<details>
+<summary>Deprecated Packages (Due to lack of funding)</summary>
 
 ## [InvokeAI](https://github.com/invoke-ai/InvokeAI) ( A Stable Diffusion WebUI )
 
 (warning: unmaintained - you have to use the last working commit in order to use it)
-- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#invokeai-amd`
-- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#invokeai-nvidia`
+- `nix run github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d#invokeai-amd`
+- `nix run github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d#invokeai-nvidia`
 
 ![invokeai](https://raw.githubusercontent.com/nixified-ai/flake/images/invokeai.webp)
 
 ## [textgen](https://github.com/oobabooga/text-generation-webui) ( Also called text-generation-webui: A WebUI for LLMs and LoRA training )
 
 (warning: unmaintained - you have to use the last working commit in order to use it)
-- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#textgen-amd`
-- `nix run github:nixified-ai/flake/63339e4c8727578a0fe0f2c63865f60b6e800079#textgen-nvidia`
+- `github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d .#textgen-amd`
+- `github:nixified-ai/flake/2aeb76f52f72c7a242f20e9bc47cfaa2ed65915d .#textgen-nvidia`
 
 ![textgen](https://raw.githubusercontent.com/nixified-ai/flake/images/textgen.webp)
 
-## Install NixOS-WSL in Windows
-
-If you're interested in running nixified.ai in the Windows Subsystem for Linux, you'll need to enable the WSL and then install NixOS-WSL via it. We provide a script that will do everything for you.
-
-1. Execute the following in Powershell
-
-   `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/nixified-ai/flake/master/install.ps1'))`
-
-The WSL must be installed via the Windows Store. The script will make an attempt to enable it automatically, but this only works on a fresh system, not one that has been modified manually.
-
-See the following documentation from Microsoft for the details on how to enable and use the WSL manually
-
-- https://learn.microsoft.com/en-us/windows/wsl/install
+</details>
 
 ## Enable binary cache
 
